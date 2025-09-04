@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hull Insight Design System - Naval Vessel Management
+All colors MUST be HSL. Light blue and white professional theme.
+*/
+
+@layer base {
+  :root {
+    /* Hull Insight Light Blue Color Palette */
+    --hull-primary: 200 90% 55%;        /* #3DBAEF - Light Blue */
+    --hull-primary-light: 200 90% 65%;  /* Lighter variant */
+    --hull-primary-dark: 200 90% 45%;   /* Darker variant */
+    
+    --hull-secondary: 210 20% 95%;      /* #F1F4F7 - Very Light Gray Blue */
+    --hull-accent: 0 65% 50%;           /* #D13434 - Red accent */
+    --hull-neutral: 0 0% 100%;          /* #FFFFFF - Pure White */
+    
+    --hull-success: 142 70% 45%;        /* #22C55E - Success Green */
+    --hull-warning: 38 92% 50%;         /* #F59E0B - Warning Amber */
+    
+    /* System Colors (mapped to Hull Insight light theme) */
+    --background: 0 0% 100%;            /* Pure white background */
+    --foreground: 210 20% 20%;          /* Dark gray for text */
+
+    --card: 0 0% 100%;                  /* Pure white cards */
+    --card-foreground: 210 20% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 20%;
+
+    --primary: 200 90% 55%;             /* Hull Light Blue Primary */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 95%;           /* Hull Light Secondary */
+    --secondary-foreground: 210 20% 20%;
+
+    --muted: 210 20% 95%;
+    --muted-foreground: 210 20% 45%;
+
+    --accent: 200 90% 92%;              /* Very light blue accent */
+    --accent-foreground: 210 20% 20%;
+
+    --destructive: 0 65% 50%;           /* Hull Accent for destructive */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 20% 88%;
+    --input: 210 20% 95%;
+    --ring: 200 90% 55%;
+
+    --radius: 1rem;                     /* 16px rounded corners */
+
+    /* Hull Insight Gradients & Effects - Light Blue Theme */
+    --hull-gradient-primary: linear-gradient(135deg, hsl(var(--hull-primary)), hsl(var(--hull-primary-light)));
+    --hull-gradient-hero: linear-gradient(135deg, hsl(var(--hull-primary-dark)), hsl(var(--hull-primary)));
+    --hull-shadow-soft: 0 4px 20px -4px hsl(var(--hull-primary) / 0.15);
+    --hull-shadow-card: 0 2px 12px -2px hsl(var(--hull-primary) / 0.1);
+    
+    /* Sidebar specific colors - Light Blue Theme */
+    --sidebar-background: 200 90% 55%;     /* Hull Light Blue Primary for sidebar */
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 200 90% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 200 90% 60%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 200 90% 45%;
+    --sidebar-ring: 200 90% 65%;
+  }
+
+  .dark {
+    /* Dark mode - keep Hull Insight light blue theme */
+    --hull-primary: 200 90% 60%;
+    --hull-primary-light: 200 90% 70%;
+    --hull-primary-dark: 200 90% 50%;
+    
+    --background: 210 20% 8%;             /* Dark background */
+    --foreground: 210 20% 92%;
+
+    --card: 210 20% 12%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 210 20% 12%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 200 90% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 18%;
+    --secondary-foreground: 210 20% 92%;
+
+    --muted: 210 20% 18%;
+    --muted-foreground: 210 20% 65%;
+
+    --accent: 200 90% 20%;
+    --accent-foreground: 200 90% 92%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 20% 20%;
+    --input: 210 20% 18%;
+    --ring: 200 90% 60%;
+    
+    --sidebar-background: 210 20% 10%;
+    --sidebar-foreground: 210 20% 92%;
+    --sidebar-primary: 200 90% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 20%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 210 20% 15%;
+    --sidebar-ring: 200 90% 60%;
+  }
+}
+
+/* Typography System - Roboto Font Family */
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    font-weight: 700; /* Roboto Bold for headings */
+  }
+  
+  .hull-text-body {
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    font-weight: 400; /* Roboto Regular for body */
+  }
+  
+  .hull-text-medium {
+    font-weight: 500; /* Roboto Medium */
+  }
+  
+  .hull-text-light {
+    font-weight: 300; /* Roboto Light */
+  }
+}

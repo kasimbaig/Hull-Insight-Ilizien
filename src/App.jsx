@@ -1,0 +1,62 @@
+import React from 'react';
+// Simple auth check for demo (replace with real auth logic as needed)
+const isAuthenticated = () => {
+  return localStorage.getItem('isLoggedIn') === 'true';
+};
+
+const RequireAuth = ({ children }) => {
+  if (!isAuthenticated()) {
+    window.location.href = '/login';
+    return null;
+  }
+  return children;
+};
+
+const RedirectIfAuth = ({ children }) => {
+  if (isAuthenticated()) {
+    window.location.href = '/';
+    return null;
+  }
+  return children;
+};
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+import MainLayout from "./components/Layout/MainLayout";
+import Dashboard from "./pages/Dashboard";
+import GlobalMasters from "./pages/GlobalMasters";
+import DockyardPlans from "./pages/DockyardPlans";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<RedirectIfAuth><Login /></RedirectIfAuth>} />
+          <Route path="/" element={<RequireAuth><MainLayout><Dashboard /></MainLayout></RequireAuth>} />
+          <Route path="/masters" element={<RequireAuth><MainLayout><GlobalMasters /></MainLayout></RequireAuth>} />
+          <Route path="/dockyard-plans" element={<RequireAuth><MainLayout><DockyardPlans /></MainLayout></RequireAuth>} />
+          <Route path="/hull-surveys" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Hull Surveys</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
+          <Route path="/drawing" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Interactive Drawing</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
+          <Route path="/reports" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Reports</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
+          <Route path="/users" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Users & Roles</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
+          <Route path="/audit" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Audit & Notifications</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
+          <Route path="/settings" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Settings</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+export default App;
