@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import api from '../lib/axios';
+import { useToast } from '../components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,11 +20,23 @@ const Login = () => {
     password: ''
   });
 
-  const handleSubmit = (e) => {
+  const { toast } = useToast();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Demo: set login flag and redirect
-    localStorage.setItem('isLoggedIn', 'true');
-    window.location.href = '/';
+    try {
+      const res = await api.post('api/auth/token/', {
+        loginname: formData.username,
+        password: formData.password,
+      });
+      localStorage.setItem('access', res.data.access);
+      localStorage.setItem('refresh', res.data.refresh);
+      localStorage.setItem('user', res.data.first_name+" "+res.data.last_name);
+      localStorage.setItem('isLoggedIn', true);
+      toast({ title: 'Login successful' });
+      window.location.href = '/';
+    } catch (err) {
+      toast({ title: 'Login failed', description: 'Invalid credentials', variant: 'destructive' });
+    }
   };
 
   const handleInputChange = (e) => {
