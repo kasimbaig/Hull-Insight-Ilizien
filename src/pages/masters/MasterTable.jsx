@@ -12,12 +12,20 @@ const getDisplayValue = (item, field, fields) => {
     }
     // For select with ref (foreign key)
     if (field.type === 'select' && field.ref && fields.relatedOptions && fields.relatedOptions[field.ref]) {
+        // If value is an object (nested), use .id or .name
+        if (value && typeof value === 'object') {
+            return value.name || value.id || '';
+        }
         const opt = fields.relatedOptions[field.ref].find(o => String(o.id) === String(value));
         return opt ? opt.name : value;
     }
     // For checkbox
     if (field.type === 'checkbox') {
         return value ? 'Yes' : 'No';
+    }
+    // If value is an object (nested), use .name or .id
+    if (value && typeof value === 'object') {
+        return value.name || value.id || '';
     }
     return value;
 };

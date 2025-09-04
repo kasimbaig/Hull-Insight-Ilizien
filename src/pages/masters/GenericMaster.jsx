@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '@/lib/axios';
 import MasterModal from './MasterModal';
 import MasterTable from './MasterTable';
 import { Button } from '@/components/ui/button';
@@ -140,97 +141,59 @@ const masterFields = {
   },
 };
 
-const initialData = {
-  unit: [
-    { id: 1, name: 'Western Naval Command' },
-    { id: 2, name: 'Eastern Naval Command' },
-    { id: 3, name: 'Southern Naval Command' },
-  ],
-  classofvessel: [
-    { id: 1, name: 'Aircraft Carrier' },
-    { id: 2, name: 'Destroyer' },
-    { id: 3, name: 'Frigate' },
-  ],
-  vesseltype: [
-    { id: 1, name: 'Capital Ship' },
-    { id: 2, name: 'Patrol Boat' },
-    { id: 3, name: 'Submarine' },
-  ],
-  dockyard: [
-    { id: 1, name: 'Cochin Shipyard' },
-    { id: 2, name: 'Mazagon Dock' },
-    { id: 3, name: 'Sevmash Shipyard' },
-  ],
-  command: [
-    { id: 1, name: 'Western Naval Command' },
-    { id: 2, name: 'Eastern Naval Command' },
-    { id: 3, name: 'Southern Naval Command' },
-  ],
-  severity: [
-    { id: 1, name: 'Minor' },
-    { id: 2, name: 'Moderate' },
-    { id: 3, name: 'Severe' },
-  ],
-  vessel: [
-    { id: 1, name: 'INS Vikrant', classofvessel: 1, vesseltype: 1, yard: 1, command: 1, year_of_build: 2013, year_of_delivery: 2022 },
-    { id: 2, name: 'INS Kolkata', classofvessel: 2, vesseltype: 2, yard: 2, command: 2, year_of_build: 2006, year_of_delivery: 2014 },
-    { id: 3, name: 'INS Chakra', classofvessel: 3, vesseltype: 3, yard: 3, command: 3, year_of_build: 2010, year_of_delivery: 2012 },
-  ],
-  module: [
-    { id: 1, name: 'Propulsion' },
-    { id: 2, name: 'Navigation' },
-    { id: 3, name: 'Weapons' },
-  ],
-  submodule: [
-    { id: 1, name: 'Engine Room', module: 1 },
-    { id: 2, name: 'Bridge', module: 2 },
-    { id: 3, name: 'Missile Bay', module: 3, parent: 2 },
-  ],
-  operationalstatus: [
-    { id: 1, name: 'Active' },
-    { id: 2, name: 'Maintenance' },
-    { id: 3, name: 'Inactive' },
-  ],
-  hullcompartment: [
-    { id: 1, name: 'Forepeak', remark: 'Front', ser: 'A1', numbers: '2', location: 'Bow', equipment: 'Anchor', features: 'Watertight', layout: 'Standard', special_requirements: 'None', standards: 'ISO' },
-    { id: 2, name: 'Aftpeak', remark: 'Rear', ser: 'A2', numbers: '1', location: 'Stern', equipment: 'Winch', features: 'Watertight', layout: 'Standard', special_requirements: 'None', standards: 'ISO' },
-  ],
-  hullsystem: [
-    { id: 1, name: 'Ballast System', remark: 'Main', ser: 'B1', numbers: '2', capabilities_feature: 'Stability', weight_volume_power_consumption: '500kg', location: 'Midship', interface: 'Manual', procurement_router: 'VendorA', vendor: 'VendorA', cost: '10000', standards: 'ISO', sustenance: '5 years', flag: 'A', sotr_type: 'Type1', sequence: 1 },
-    { id: 2, name: 'Steering System', remark: 'Aux', ser: 'B2', numbers: '1', capabilities_feature: 'Direction', weight_volume_power_consumption: '200kg', location: 'Aft', interface: 'Auto', procurement_router: 'VendorB', vendor: 'VendorB', cost: '8000', standards: 'ISO', sustenance: '3 years', flag: 'B', sotr_type: 'Type2', sequence: 2 },
-  ],
-  hullequipment: [
-    { id: 1, name: 'Anchor', weight_volume_power_consumption: '100kg', procurement_router: 'VendorA', remark: 'Heavy', vendor: 'VendorA', cost: '2000', sustenance: '10 years', ser: 'E1', numbers: '2', capabilities_feature: 'Hold', location: 'Bow', interface: 'Manual', standards: 'ISO', flag: 'A', sotr_type: 'Type1', equipment_type_name: 'Anchor' },
-    { id: 2, name: 'Winch', weight_volume_power_consumption: '50kg', procurement_router: 'VendorB', remark: 'Light', vendor: 'VendorB', cost: '1000', sustenance: '8 years', ser: 'E2', numbers: '1', capabilities_feature: 'Pull', location: 'Stern', interface: 'Auto', standards: 'ISO', flag: 'B', sotr_type: 'Type2', equipment_type_name: 'Winch' },
-  ],
-  damagetype: [
-    { id: 1, name: 'Corrosion' },
-    { id: 2, name: 'Fracture' },
-    { id: 3, name: 'Dent' },
-  ],
-  surveycycle: [
-    { id: 1, name: 'Annual', cycle_unit: 'MONTHS', cycle_value: 12, description: 'Yearly survey', submodule: 1 },
-    { id: 2, name: 'Special', cycle_unit: 'DAYS', cycle_value: 30, description: 'Special survey', submodule: 2 },
-    { id: 3, name: 'Refit', cycle_unit: 'REFIT', cycle_value: null, description: 'Refit-to-Refit', submodule: 3 },
-  ],
-  dynamicfield: [
-    { id: 1, sub_module: 1, label: 'Pressure', field_type: 'number', required: true, dropdown_options: '', data_source: '' },
-    { id: 2, sub_module: 2, label: 'Material', field_type: 'dropdown', required: false, dropdown_options: 'Steel,Aluminum', data_source: '' },
-    { id: 3, sub_module: 3, label: 'Inspection Date', field_type: 'date', required: false, dropdown_options: '', data_source: '' },
-  ],
-};
 
+
+
+const apiMap = {
+  unit: 'units',
+  classofvessel: 'classofvessels',
+  vesseltype: 'vesseltypes',
+  dockyard: 'dockyards',
+  command: 'commands',
+  vessel: 'vessels',
+  hullcompartment: 'compartments',
+  hullsystem: 'systems',
+  hullequipment: 'equipments',
+  damagetype: 'damagetypes',
+  severity: 'severities',
+  operationalstatus: 'operationalstatuses',
+  module: 'modules',
+  submodule: 'submodules',
+  // Add more as needed
+};
 
 const GenericMaster = ({ masterKey }) => {
   const fields = masterFields[masterKey];
-  // Store all master items in a state object keyed by masterKey
-  const [allItems, setAllItems] = useState(() => ({ ...initialData }));
+  const [allItems, setAllItems] = useState({});
+  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState({});
 
+  // Fetch all master data (for select fields too)
+  useEffect(() => {
+    const fetchAll = async () => {
+      setLoading(true);
+      const keys = Object.keys(masterFields);
+      const results = {};
+      for (const key of keys) {
+        const endpoint = apiMap[key];
+        if (!endpoint) continue;
+        try {
+          const res = await api.get(`/master/${endpoint}/`);
+          results[key] = Array.isArray(res.data.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
+        } catch (e) {
+          results[key] = [];
+        }
+      }
+      setAllItems(results);
+      setLoading(false);
+    };
+    fetchAll();
+  }, [masterKey]);
+
   // Get items for the current master
-  const items = allItems[masterKey] || [];
+  const items = Array.isArray(allItems[masterKey]) ? allItems[masterKey] : [];
 
   // Build related options for select fields (foreign keys)
   const relatedOptions = {};
@@ -254,26 +217,61 @@ const GenericMaster = ({ masterKey }) => {
   };
   const closeForm = () => setShowForm(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let newItems;
-    if (editId) {
-      newItems = items.map(u => u.id === editId ? { ...u, ...form } : u);
-    } else {
-      newItems = [...items, { id: Date.now(), ...form }];
-    }
-    setAllItems(prev => ({ ...prev, [masterKey]: newItems }));
-    closeForm();
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
   };
 
-  const handleDelete = (id) => {
-    const newItems = items.filter(u => u.id !== id);
-    setAllItems(prev => ({ ...prev, [masterKey]: newItems }));
+  // CRUD API integration
+  const refresh = async () => {
+    // re-fetch all data for current master and related
+    const keys = Object.keys(masterFields);
+    const results = {};
+    for (const key of keys) {
+      const endpoint = apiMap[key];
+      if (!endpoint) continue;
+      try {
+        const res = await api.get(`/master/${endpoint}/`);
+        results[key] = Array.isArray(res.data.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
+      } catch (e) {
+        results[key] = [];
+      }
+    }
+    setAllItems(results);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const endpoint = apiMap[masterKey];
+    if (!endpoint) return;
+    try {
+      if (editId) {
+        // For update, use POST with id in body
+        await api.post(`/master/${endpoint}/`, { ...form, id: editId });
+      } else {
+        await api.post(`/master/${endpoint}/`, form);
+      }
+      await refresh();
+      closeForm();
+    } catch (err) {
+      alert('Error saving data!');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const endpoint = apiMap[masterKey];
+    if (!endpoint) return;
+    try {
+      // For delete, use POST with id and delete=true
+      await api.post(`/master/${endpoint}/`, { id, delete: true });
+      await refresh();
+    } catch (err) {
+      alert('Error deleting data!');
+    }
   };
 
   if (!fields) return <div className="text-center text-red-500">Master not configured.</div>;
+  if (loading) return <div className="text-center text-blue-500">Loading...</div>;
 
   return (
     <div className="space-y-6 w-full">
