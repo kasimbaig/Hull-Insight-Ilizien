@@ -23,6 +23,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const Topbar = () => {
+  const user = {
+    name: localStorage.getItem('user') || 'Guest User',
+  };  
   const globalMasters = [
     { name: 'Unit', key: 'unit', icon: Squares2X2Icon, href: '/masters?category=unit' },
     { name: 'Class of Vessel', key: 'classofvessel', icon: DocumentTextIcon, href: '/masters?category=classofvessel' },
@@ -120,7 +123,7 @@ const Topbar = () => {
           {/* User Menu */}
           <div className="flex items-center space-x-3 pl-4 border-l border-hull-secondary">
             <div className="text-right">
-              <p className="text-sm font-medium text-foreground">Captain S. Sharma</p>
+              <p className="text-sm font-medium text-foreground">{user.name}</p>
               <p className="text-xs text-muted-foreground">Fleet Operations</p>
             </div>
             <DropdownMenu>

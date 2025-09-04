@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from '@/components/ui/use-toast';
 import api from '@/lib/axios';
 import MasterModal from './MasterModal';
 import MasterTable from './MasterTable';
@@ -246,27 +247,29 @@ const GenericMaster = ({ masterKey }) => {
     if (!endpoint) return;
     try {
       if (editId) {
-        // For update, use POST with id in body
         await api.post(`/master/${endpoint}/`, { ...form, id: editId });
+        toast({ title: `${fields.title} updated successfully!`, variant: 'success' });
       } else {
         await api.post(`/master/${endpoint}/`, form);
+        toast({ title: `${fields.title} added successfully!`, variant: 'success' });
       }
       await refresh();
       closeForm();
     } catch (err) {
-      alert('Error saving data!');
+      toast({ title: `Error saving ${fields.title.toLowerCase()}!`, variant: 'destructive' });
     }
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm(`Are you sure you want to delete this ${fields.title}?`)) return;
     const endpoint = apiMap[masterKey];
     if (!endpoint) return;
     try {
-      // For delete, use POST with id and delete=true
       await api.post(`/master/${endpoint}/`, { id, delete: true });
+      toast({ title: `${fields.title} deleted successfully!`, variant: 'success' });
       await refresh();
     } catch (err) {
-      alert('Error deleting data!');
+      toast({ title: `Error deleting ${fields.title.toLowerCase()}!`, variant: 'destructive' });
     }
   };
 
