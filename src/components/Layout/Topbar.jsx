@@ -68,7 +68,7 @@ const Topbar = () => {
                 <ChevronDownIcon className="h-4 w-4 ml-1" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-white border-hull-secondary shadow-lg">
+            <DropdownMenuContent className="w-56 bg-white border-hull-secondary shadow-lg z-[1100]">
               <DropdownMenuLabel className="text-hull-primary font-semibold">
                 Quick Access Masters
               </DropdownMenuLabel>
@@ -133,7 +133,7 @@ const Topbar = () => {
                   <ChevronDownIcon className="h-4 w-4 text-muted-foreground" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white border-hull-secondary shadow-lg">
+              <DropdownMenuContent className="w-56 bg-white border-hull-secondary shadow-lg z-[1100]">
                 <DropdownMenuLabel className="text-hull-primary">
                   Captain S. Sharma
                 </DropdownMenuLabel>
