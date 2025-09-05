@@ -28,8 +28,8 @@ const Login = () => {
         loginname: formData.username,
         password: formData.password,
       });
-      localStorage.setItem('access', res.data.access);
-      localStorage.setItem('refresh', res.data.refresh);
+      localStorage.setItem('accessToken', res.data.access);
+      localStorage.setItem('refreshToken', res.data.refresh);
       localStorage.setItem('user', res.data.first_name+" "+res.data.last_name);
       localStorage.setItem('isLoggedIn', true);
       toast({ title: 'Login successful' });

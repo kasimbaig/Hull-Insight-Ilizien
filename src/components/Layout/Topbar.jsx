@@ -23,6 +23,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const Topbar = () => {
+  const logOut = () => {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    window.location.href = '/login';
+  }
   const user = {
     name: localStorage.getItem('user') || 'Guest User',
   };  
@@ -164,8 +171,7 @@ const Topbar = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      localStorage.removeItem('isLoggedIn');
-                      window.location.href = '/login';
+                      logOut();
                     }}
                     className="flex items-center w-full cursor-pointer text-hull-accent hover:bg-hull-accent/5 text-left"
                   >
