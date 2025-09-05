@@ -140,25 +140,25 @@ const DockyardPlans = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Dockyard Plan Approval</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage vessel docking plans, approvals, and scheduling
-          </p>
+      {/* Top Navbar with Gradient and Sticky Heading */}
+      <nav className="w-full bg-gradient-to-r from-blue-200 via-blue-100 to-blue-300 border-b border-blue-300 sticky top-0 z-10 shadow">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+          <div>
+            <h1 className="text-2xl font-bold text-hull-primary">Dockyard Plan Approval</h1>
+            <p className="text-muted-foreground mt-1 text-sm">Manage vessel docking plans, approvals, and scheduling</p>
+          </div>
+          <div className="flex space-x-3">
+            <Button variant="outline" size="sm">
+              <CalendarIcon className="h-4 w-4 mr-2" />
+              View Calendar
+            </Button>
+            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
+              <PlusIcon className="h-4 w-4 mr-2" />
+              New Docking Plan
+            </Button>
+          </div>
         </div>
-        <div className="flex space-x-3">
-          <Button variant="outline" size="sm">
-            <CalendarIcon className="h-4 w-4 mr-2" />
-            View Calendar
-          </Button>
-          <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
-            <PlusIcon className="h-4 w-4 mr-2" />
-            New Docking Plan
-          </Button>
-        </div>
-      </div>
+      </nav>
 
       {/* Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
