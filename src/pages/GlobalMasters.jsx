@@ -99,10 +99,10 @@ const GlobalMasters = () => {
               <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
+            {/* <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
               <PlusIcon className="h-4 w-4 mr-2" />
               Add New
-            </Button>
+            </Button> */}
           </div>
         </div>
       </nav>

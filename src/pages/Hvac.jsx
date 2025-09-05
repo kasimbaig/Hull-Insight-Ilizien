@@ -6,12 +6,13 @@ import GenericMaster from './masters/GenericMaster';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, MagnifyingGlassIcon, DocumentArrowUpIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import HvacTrialFormModal from '../components/HvacTrialFormModal';
 
 const Hvac = () => {
   const [trials, setTrials] = useState([]);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const fetchTrials = async () => {
+  const [showModal, setShowModal] = useState(false);
+  const fetchTrials = async () => {
       setLoading(true);
       try {
         const res = await api.get('shipmodule/trials/?page=1');
@@ -25,8 +26,10 @@ const Hvac = () => {
       }
       setLoading(false);
     };
+  useEffect(() => {
+    
     fetchTrials();
-  }, []);
+  }, [showModal]);
 
   return (
   <div className="space-y-6 w-full">
@@ -45,14 +48,15 @@ const Hvac = () => {
               <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
+            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm" onClick={() => { setShowModal(true);}}>
               <PlusIcon className="h-4 w-4 mr-2" />
               Add New
             </Button>
           </div>
         </div>
       </nav>
-
+      {/* Modal for Adding/Editing HVAC Trials */}
+      <HvacTrialFormModal open={showModal} onClose={() => setShowModal(false)} onSuccess={() => {setShowModal(false);}} editId={null}/>
       {/* Main Content Area */}
       <div className="w-full">
         <Card className="bg-white/95 shadow-lg rounded-2xl w-full">
