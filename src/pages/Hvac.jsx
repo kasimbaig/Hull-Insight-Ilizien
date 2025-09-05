@@ -87,7 +87,7 @@ const Hvac = () => {
                     { key: 'document_no', label: 'Document No.' },
                     { key: 'occasion_of_trials', label: 'Occasion of Trials' },
                     { key: 'authority_for_trials', label: 'Authority for Trials' },
-                    { key: 'modified_on', label: 'Modified On' },
+                    // { key: 'modified_on', label: 'Modified On' },
                   ]
                 }}
                 onEdit={() => {}}
