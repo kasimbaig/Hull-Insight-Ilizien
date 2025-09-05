@@ -188,6 +188,7 @@ const HvacTrialFormModal = ({ open, onClose, onSuccess, editId }) => {
       setLoading(true);
       api.get(`/shipmodule/trials/${editId}/`)
         .then(res => {
+            res = res.data;
           setForm({
             ship: res.data.ship,
             date_of_trials: res.data.date_of_trials,
@@ -199,10 +200,10 @@ const HvacTrialFormModal = ({ open, onClose, onSuccess, editId }) => {
         })
         .catch(() => setError('Failed to fetch trial'));
       api.get(`/shipmodule/ac-measurements/?hvac_trial=${editId}`)
-        .then(res => setAirRows(res.data))
+        .then(res => setAirRows(res.data.data))
         .catch(() => setAirRows([]));
       api.get(`/shipmodule/machinery-measurements/?hvac_trial=${editId}`)
-        .then(res => setMachineryRows(res.data))
+        .then(res => setMachineryRows(res.data.data))
         .catch(() => setMachineryRows([]));
       setLoading(false);
     } else {
@@ -231,22 +232,43 @@ const HvacTrialFormModal = ({ open, onClose, onSuccess, editId }) => {
       let trialRes;
       if (editId) {
         trialRes = await api.put(`/shipmodule/trials/${editId}/`, form);
+
       } else {
         trialRes = await api.post('/shipmodule/trials/', form);
       }
-      const trialId = trialRes.data.id;
-      // Post AirFlowMeasurement rows
-      for (const row of airRows) {
-        if (row.compartment) {
-          await api.post('/shipmodule/ac-measurements/', { ...row, hvac_trial: trialId });
+      if(!editId){
+        const trialId = trialRes.data.id;
+        // Post AirFlowMeasurement rows
+        for (const row of airRows) {
+            if (row.compartment) {
+            await api.post('/shipmodule/ac-measurements/', { ...row, hvac_trial: trialId });
+            }
         }
-      }
-      // Post MachineryAirFlowMeasurement rows
-      for (const row of machineryRows) {
-        if (row.compartment) {
-          await api.post('/shipmodule/machinery-measurements/', { ...row, hvac_trial: trialId });
+        // Post MachineryAirFlowMeasurement rows
+        for (const row of machineryRows) {
+            if (row.compartment) {
+            await api.post('/shipmodule/machinery-measurements/', { ...row, hvac_trial: trialId });
+            }
         }
-      }
+    }
+    else{
+        const trialId = editId;
+        // Update AirFlowMeasurement rows
+        for (const row of airRows) {
+            if (row.id) {
+                await api.put(`/shipmodule/ac-measurements/${row.id}/`, row);
+            } else {
+                await api.post('/shipmodule/ac-measurements/', { ...row, hvac_trial: trialId });
+            }
+        }
+        for (const row of machineryRows) {
+            if (row.id) {
+                await api.put(`/shipmodule/machinery-measurements/${row.id}/`, row);
+            } else {
+                await api.post('/shipmodule/machinery-measurements/', { ...row, hvac_trial: trialId });
+            }
+        }
+    }
       onSuccess(trialRes.data); // Only close modal from parent after refresh
     } catch (err) {
       setError('Failed to save.');

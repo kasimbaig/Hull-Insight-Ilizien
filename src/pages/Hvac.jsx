@@ -7,18 +7,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { PlusIcon, MagnifyingGlassIcon, DocumentArrowUpIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import HvacTrialFormModal from '../components/HvacTrialFormModal';
+import { set } from 'date-fns';
 
 const Hvac = () => {
   const [trials, setTrials] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const fetchTrials = async () => {
+  const [editId, setEditId] = useState(null);
+
+  useEffect(() => {
+    const fetchTrials = async () => {
       setLoading(true);
       try {
         const res = await api.get('shipmodule/trials/?page=1');
         // Remove unwanted fields
-        const filtered = Array.isArray(res.data)
-          ? res.data.map(({ created_ip, created_by, modified_by, active, ...rest }) => rest)
+        const filtered = Array.isArray(res.data.results)
+          ? res.data.results.map(({ created_ip, created_by, modified_by, active, ...rest }) => rest)
           : [];
         setTrials(filtered);
       } catch (err) {
@@ -26,8 +30,6 @@ const Hvac = () => {
       }
       setLoading(false);
     };
-  useEffect(() => {
-    
     fetchTrials();
   }, [showModal]);
 
@@ -56,7 +58,7 @@ const Hvac = () => {
         </div>
       </nav>
       {/* Modal for Adding/Editing HVAC Trials */}
-      <HvacTrialFormModal open={showModal} onClose={() => setShowModal(false)} onSuccess={() => {setShowModal(false);}} editId={null}/>
+      <HvacTrialFormModal open={showModal} onClose={() => setShowModal(false)} onSuccess={() => {setShowModal(false);}} editId={editId}/>
       {/* Main Content Area */}
       <div className="w-full">
         <Card className="bg-white/95 shadow-lg rounded-2xl w-full">
@@ -94,7 +96,7 @@ const Hvac = () => {
                     // { key: 'modified_on', label: 'Modified On' },
                   ]
                 }}
-                onEdit={() => {}}
+                onEdit={(trial) => {setShowModal(true); setEditId(trial.id);}}
                 onDelete={() => {}}
                 allItems={{}}
               />
