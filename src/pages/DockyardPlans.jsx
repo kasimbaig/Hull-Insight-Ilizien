@@ -141,7 +141,7 @@ const DockyardPlans = () => {
   return (
     <div className="space-y-6">
       {/* Top Navbar with Gradient and Sticky Heading */}
-      <nav className="w-full bg-gradient-to-r from-blue-200 via-blue-100 to-blue-300 border-b border-blue-300 sticky top-0 z-10 shadow">
+      <nav className="w-full bg-gradient-to-r from-blue-200 via-blue-100 to-blue-300 border-b border-blue-300 sticky top-0 z-10 shadow py-4">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
           <div>
             <h1 className="text-2xl font-bold text-hull-primary">Dockyard Plan Approval</h1>
@@ -324,15 +324,76 @@ const DockyardPlans = () => {
               <CardDescription>Plans awaiting review and approval decisions</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12">
-                <ClockIcon className="h-12 w-12 text-hull-warning mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">Review Queue</h3>
-                <p className="text-muted-foreground mb-4">
-                  Plans pending review will appear here for authorized reviewers
-                </p>
-                <Button className="bg-hull-primary hover:bg-hull-primary-dark">
-                  View Review Queue
-                </Button>
+              <div className="space-y-4">
+                {[{
+                  id: 'DP-2024-002',
+                  vessel: 'INS Vikramaditya',
+                  dockyard: 'Mumbai Naval Dockyard',
+                  reason: 'Emergency Repair',
+                  initiator: 'Commander R. Nair',
+                  status: 'Under Review',
+                  submittedDate: '2024-01-12',
+                  reviewerComments: 'Awaiting technical assessment',
+                  scheduledDate: '2024-01-25'
+                }, {
+                  id: 'DP-2024-004',
+                  vessel: 'INS Chennai',
+                  dockyard: 'Kolkata Dry Dock',
+                  reason: 'Hull Inspection',
+                  initiator: 'Lt. Commander A. Patel',
+                  status: 'Revision Requested',
+                  submittedDate: '2024-01-05',
+                  reviewerComments: 'Additional safety documentation required',
+                  scheduledDate: '2024-02-20'
+                }].map((plan) => (
+                  <div key={plan.id} className="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-4 mb-3">
+                          <h3 className="text-lg font-semibold text-foreground">{plan.id}</h3>
+                          <Badge className={getStatusBadge(plan.status)} variant="secondary">{plan.status}</Badge>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                          <div className="flex items-center space-x-2">
+                            <BuildingOffice2Icon className="h-4 w-4 text-hull-primary" />
+                            <span className="font-medium text-foreground">{plan.vessel}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <MapPinIcon className="h-4 w-4 text-hull-primary" />
+                            <span className="text-sm text-muted-foreground">{plan.dockyard}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <CalendarIcon className="h-4 w-4 text-hull-primary" />
+                            <span className="text-sm text-muted-foreground">Scheduled: {plan.scheduledDate}</span>
+                          </div>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          <span>Reason: {plan.reason}</span>
+                          <span className="mx-2">•</span>
+                          <span>Initiated by: {plan.initiator}</span>
+                          <span className="mx-2">•</span>
+                          <span>Submitted: {plan.submittedDate}</span>
+                        </div>
+                        {plan.reviewerComments && (
+                          <div className="mt-3 p-3 bg-hull-warning/10 rounded-lg border-l-4 border-hull-warning">
+                            <p className="text-sm text-foreground">
+                              <span className="font-medium">Reviewer Comments:</span> {plan.reviewerComments}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2 ml-4">
+                        <Button variant="ghost" size="sm">
+                          <EyeIcon className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <PencilIcon className="h-4 w-4" />
+                        </Button>
+                        <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">Review</Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -390,22 +451,76 @@ const DockyardPlans = () => {
               <CardDescription>Generate and export docking plan reports</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12">
-                <DocumentTextIcon className="h-12 w-12 text-hull-primary mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">Report Generation</h3>
-                <p className="text-muted-foreground mb-4">
-                  Generate detailed reports for docking plans, approvals, and schedules
-                </p>
-                <div className="flex justify-center space-x-3">
-                  <Button variant="outline">
-                    Approval Status Report
-                  </Button>
-                  <Button variant="outline">
-                    Docking Schedule Report
-                  </Button>
-                  <Button className="bg-hull-primary hover:bg-hull-primary-dark">
-                    Custom Report
-                  </Button>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 rounded-xl mb-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Approval Status Report</h3>
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-blue-50">
+                      <tr>
+                        <th className="p-2">Plan ID</th>
+                        <th className="p-2">Vessel</th>
+                        <th className="p-2">Status</th>
+                        <th className="p-2">Submitted</th>
+                        <th className="p-2">Approved</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="p-2">DP-2024-001</td>
+                        <td className="p-2">INS Vikrant</td>
+                        <td className="p-2">Approved</td>
+                        <td className="p-2">2024-01-10</td>
+                        <td className="p-2">2024-01-15</td>
+                      </tr>
+                      <tr>
+                        <td className="p-2">DP-2024-002</td>
+                        <td className="p-2">INS Vikramaditya</td>
+                        <td className="p-2">Under Review</td>
+                        <td className="p-2">2024-01-12</td>
+                        <td className="p-2">-</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="p-4 border border-gray-200 rounded-xl mb-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Docking Schedule Report</h3>
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-blue-50">
+                      <tr>
+                        <th className="p-2">Date</th>
+                        <th className="p-2">Vessel</th>
+                        <th className="p-2">Dockyard</th>
+                        <th className="p-2">Type</th>
+                        <th className="p-2">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="p-2">2024-01-25</td>
+                        <td className="p-2">INS Vikramaditya</td>
+                        <td className="p-2">Mumbai Naval Dockyard</td>
+                        <td className="p-2">Emergency Repair</td>
+                        <td className="p-2">Confirmed</td>
+                      </tr>
+                      <tr>
+                        <td className="p-2">2024-02-01</td>
+                        <td className="p-2">INS Vikrant</td>
+                        <td className="p-2">Cochin Shipyard</td>
+                        <td className="p-2">Routine Maintenance</td>
+                        <td className="p-2">Confirmed</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="p-4 border border-gray-200 rounded-xl mb-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Custom Report</h3>
+                  <p className="text-muted-foreground mb-2">Custom docking plan analytics and summaries will appear here.</p>
+                  <ul className="list-disc pl-6 text-sm">
+                    <li>Total plans: 12</li>
+                    <li>Approved: 7</li>
+                    <li>Pending Review: 3</li>
+                    <li>Need Revision: 2</li>
+                  </ul>
                 </div>
               </div>
             </CardContent>
