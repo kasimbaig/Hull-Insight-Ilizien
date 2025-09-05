@@ -1,11 +1,32 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
+import api from '@/lib/axios';
+import MasterTable from './masters/MasterTable';
 import GenericMaster from './masters/GenericMaster';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, MagnifyingGlassIcon, DocumentArrowUpIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 
 const Hvac = () => {
-  // Group master categories into sections for dropdowns, matching Django models
+  const [trials, setTrials] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchTrials = async () => {
+      setLoading(true);
+      try {
+        const res = await api.get('shipmodule/trials/?page=1');
+        // Remove unwanted fields
+        const filtered = Array.isArray(res.data)
+          ? res.data.map(({ created_ip, created_by, modified_by, active, ...rest }) => rest)
+          : [];
+        setTrials(filtered);
+      } catch (err) {
+        setTrials([]);
+      }
+      setLoading(false);
+    };
+    fetchTrials();
+  }, []);
 
   return (
   <div className="space-y-6 w-full">
@@ -51,7 +72,29 @@ const Hvac = () => {
             </div>
           </CardHeader>
           <CardContent className="">
-            {/* Enter your HVAC management UI here */}
+            {loading ? (
+              <div className="text-center text-blue-500">Loading...</div>
+            ) : (
+              <MasterTable
+                items={trials}
+                fields={{
+                  title: 'HVAC Trials',
+                  list: [
+                    { key: 'ship_name', label: 'Ship Name' },
+                    { key: 'code', label: 'Code' },
+                    { key: 'date_of_trials', label: 'Date of Trials' },
+                    { key: 'place_of_trials', label: 'Place of Trials' },
+                    { key: 'document_no', label: 'Document No.' },
+                    { key: 'occasion_of_trials', label: 'Occasion of Trials' },
+                    { key: 'authority_for_trials', label: 'Authority for Trials' },
+                    { key: 'modified_on', label: 'Modified On' },
+                  ]
+                }}
+                onEdit={() => {}}
+                onDelete={() => {}}
+                allItems={{}}
+              />
+            )}
           </CardContent>
         </Card>
       </div>
