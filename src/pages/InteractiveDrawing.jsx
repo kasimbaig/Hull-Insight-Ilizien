@@ -255,6 +255,11 @@ export default function InteractiveDrawing() {
 
   const deleteShape = () => {
     if (selectedShape === null) return;
+    if (selectedShape === 'image') {
+      setBackgroundImage(null);
+      setSelectedShape(null);
+      return;
+    }
     setShapes(shapes.filter((s) => s.id !== selectedShape));
     setSelectedShape(null);
     setShapeMetadata({});
@@ -422,7 +427,18 @@ export default function InteractiveDrawing() {
           </defs>
           {showGrid && <rect width="800" height="500" fill="url(#grid)" />}
           {backgroundImage && (
-            <image href={backgroundImage} x="0" y="0" width="800" height="500" />
+            <image
+              href={backgroundImage}
+              x="0"
+              y="0"
+              width="800"
+              height="500"
+              style={{ cursor: selectedShape === 'image' ? 'pointer' : 'default', opacity: selectedShape === 'image' ? 0.8 : 1 }}
+              onClick={e => {
+                e.stopPropagation();
+                setSelectedShape('image');
+              }}
+            />
           )}
           {shapes.map((shape) => {
             const isSelected = selectedShape === shape.id;
