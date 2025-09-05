@@ -121,14 +121,14 @@ const Topbar = () => {
           </DropdownMenu> */}
 
           {/* Search */}
-          <div className="relative">
+          {/* <div className="relative">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search vessels, plans..."
               className="pl-9 pr-4 py-2 w-64 border border-hull-secondary rounded-xl bg-background focus:ring-2 focus:ring-hull-primary focus:border-hull-primary transition-colors text-sm"
             />
-          </div>
+          </div> */}
 
           {/* Notifications */}
           <div className="relative">

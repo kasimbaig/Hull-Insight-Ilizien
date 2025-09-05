@@ -21,14 +21,14 @@ const Sidebar = () => {
     { name: 'Dashboard', icon: Squares2X2Icon, href: '/' },
     { name: 'Global Masters', icon: DocumentTextIcon, href: '/masters' },
     { name: 'Dockyard Plan Approval', icon: DocumentChartBarIcon, href: '/dockyard-plans' },
-    { name: 'Quarterly Hull Survey', icon: MagnifyingGlassIcon, href: '/hull-surveys' },
+    { name: 'Quarterly Hull Survey', icon: MagnifyingGlassIcon, href: '/hull-surveys' },//GIVE REPORTS make design same as global masters and all
     // Changed HVAC Trials icon to CogIcon for a better representation
     { name: 'HVAC Trials', icon: CogIcon, href: '/hvac' },
     { name: 'Interactive Drawing', icon: PencilSquareIcon, href: '/drawing' },
-    { name: 'Reports', icon: ChartBarIcon, href: '/reports' },
+    // { name: 'Reports', icon: ChartBarIcon, href: '/reports' },
     { name: 'Users & Roles', icon: UserGroupIcon, href: '/users' },
-    { name: 'Audit & Notifications', icon: BellIcon, href: '/audit' },
-    { name: 'Settings', icon: CogIcon, href: '/settings' },
+    // { name: 'Audit & Notifications', icon: BellIcon, href: '/audit' },
+    // { name: 'Settings', icon: CogIcon, href: '/settings' },
   ];
 
   const location = useLocation();
