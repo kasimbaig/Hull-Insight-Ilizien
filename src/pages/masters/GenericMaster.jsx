@@ -166,7 +166,7 @@ const apiMap = {
 
 const PAGE_SIZE = 20;
 
-const GenericMaster = ({ masterKey }) => {
+const GenericMaster = ({ masterKey, searchValue='' }) => {
   const fields = masterFields[masterKey];
   const [allItems, setAllItems] = useState({});
   const [loading, setLoading] = useState(false);
@@ -174,10 +174,11 @@ const GenericMaster = ({ masterKey }) => {
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState({});
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
   const [hasNext, setHasNext] = useState(false);
   const [hasPrev, setHasPrev] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  // Accept searchValue as prop
+  // Remove local search state
 
   // Fetch all master data (for select fields too)
   useEffect(() => {
@@ -191,11 +192,10 @@ const GenericMaster = ({ masterKey }) => {
         let params = {};
         if (key === masterKey) {
           params = { page, order_by: '-id' };
-          if (search) params.search = search;
+          if (typeof searchValue === 'string' && searchValue) params.search = searchValue;
         }
         try {
           const res = await api.get(`/master/${endpoint}/`, { params });
-          // If paginated, expect { results: [...], count, next, previous }
           if (key === masterKey && res.data && (res.data.results !== undefined || res.data.next !== undefined || res.data.previous !== undefined)) {
             results[key] = Array.isArray(res.data.results) ? res.data.results : [];
             setHasNext(!!res.data.next);
@@ -212,7 +212,7 @@ const GenericMaster = ({ masterKey }) => {
       setLoading(false);
     };
     fetchAll();
-  }, [masterKey, page, search]);
+  }, [masterKey, page, searchValue]);
 
   // Get items for the current master
   const items = Array.isArray(allItems[masterKey]) ? allItems[masterKey] : [];
@@ -314,14 +314,6 @@ const GenericMaster = ({ masterKey }) => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-blue-900">{fields.title} Master</h2>
         <div className="flex gap-2 items-center">
-          <input
-            type="text"
-            placeholder={`Search ${fields.title}`}
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1); }}
-            className="border border-blue-200 rounded px-2 py-1 text-sm"
-            style={{ minWidth: 180 }}
-          />
           <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={openAdd}>
             Add {fields.title}
           </Button>
@@ -335,7 +327,7 @@ const GenericMaster = ({ masterKey }) => {
           onDelete={handleDelete}
           allItems={allItems}
         />
-    <Pagination page={page} setPage={setPage} hasNext={hasNext} hasPrev={hasPrev} totalPages={totalPages} />
+        <Pagination page={page} setPage={setPage} hasNext={hasNext} hasPrev={hasPrev} totalPages={totalPages} />
       </div>
       <MasterModal
         open={showForm}

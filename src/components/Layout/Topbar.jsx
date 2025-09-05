@@ -51,10 +51,23 @@ const Topbar = () => {
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
           <span className="text-hull-primary font-semibold">Naval Command</span>
+          {/* <span>→</span>
+          <span>INS Vikrant</span> */}
           <span>→</span>
-          <span>INS Vikrant</span>
-          <span>→</span>
-          <span className="text-foreground font-medium">Dashboard</span>
+              <span className="text-foreground font-medium">
+                {(() => {
+                  const path = window.location.pathname;
+                  if (path === '/' || path === '/dashboard') return 'Dashboard';
+                  // Extract last part of path, capitalize
+                  const parts = path.split('/').filter(Boolean);
+                  let page = parts[parts.length - 1] || 'Dashboard';
+                  // Optionally, handle known routes
+                  if (page === 'masters') return 'Masters';
+                  if (page === 'login') return 'Login';
+                  // Capitalize first letter
+                  return page.charAt(0).toUpperCase() + page.slice(1);
+                })()}
+              </span>
         </div>
 
         {/* Right side actions */}

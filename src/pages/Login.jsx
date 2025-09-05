@@ -50,7 +50,7 @@ const Login = () => {
     <div className="w-[100vw] h-[100vh] min-h-0 min-w-0 flex items-center justify-center bg-gradient-to-br from-blue-200 via-blue-100 to-blue-300 relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width=\'60\'%20height=\'60\'%20viewBox=\'0%200%2060%2060\'%20xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg%20fill=\'none\'%20fill-rule=\'evenodd\'%3E%3Cg%20fill=\'%2364B5F6\'%20fill-opacity=\'0.10\'%3E%3Ccircle%20cx=\'7\'%20cy=\'7\'%20r=\'7\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20 pointer-events-none"></div>
 
-  <div className="relative w-full max-w-[37vw] md:max-w-[37vw] mx-auto p-0 z-10">
+  <div className="relative w-full max-w-[80vw] md:max-w-[30vw] mx-auto p-0 z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto mb-4 p-3 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 w-16 h-16 flex items-center justify-center shadow-lg">
@@ -124,7 +124,7 @@ const Login = () => {
               </div>
 
               {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <input
                     id="remember"
@@ -141,7 +141,7 @@ const Login = () => {
                 <Button variant="link" className="text-blue-600 hover:text-blue-800 p-0 h-auto">
                   Forgot password?
                 </Button>
-              </div>
+              </div> */}
 
               {/* Submit Button */}
               <Button 
@@ -153,7 +153,7 @@ const Login = () => {
             </form>
 
             {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            {/* <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <p className="text-xs text-blue-700 text-center mb-2">
                 <strong>Demo Credentials:</strong>
               </p>
@@ -167,7 +167,7 @@ const Login = () => {
                   <span className="font-mono">hull2024</span>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Footer */}
             <div className="mt-6 text-center text-xs text-blue-700">

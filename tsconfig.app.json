@@ -26,5 +26,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "ClassofVesselMaster.jsx", "CommandMaster.jsx", "DockyardMaster.jsx", "SeverityMaster.jsx", "UnitMaster.jsx", "VesselTypeMaster.jsx"]
 }

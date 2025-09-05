@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GenericMaster from './masters/GenericMaster';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,13 @@ import { PlusIcon, MagnifyingGlassIcon, DocumentArrowUpIcon, DocumentArrowDownIc
 
 const GlobalMasters = () => {
   const [selectedMaster, setSelectedMaster] = useState('unit');
+  const [searchValue, setSearchValue] = useState('');
 
+  useEffect(() => {
+    // Reset search value when selected master changes
+    setSearchValue('');
+  }, [selectedMaster]);
+  
   // Group master categories into sections for dropdowns, matching Django models
   const masterCategorySections = [
     {
@@ -119,6 +125,8 @@ const GlobalMasters = () => {
                   <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     type="text"
+                    value={searchValue}
+                    onChange={e => setSearchValue(e.target.value)}
                     placeholder={`Search ${masterCategorySections.flatMap(s => s.categories).find(c => c.id === selectedMaster)?.name?.toLowerCase() || 'vessels'}...`}
                     className="pl-9 pr-4 py-2 w-64 border border-input rounded-lg bg-background focus:ring-2 focus:ring-hull-primary focus:border-hull-primary transition-colors text-sm"
                   />
@@ -127,7 +135,7 @@ const GlobalMasters = () => {
             </div>
           </CardHeader>
           <CardContent className="">
-            <GenericMaster masterKey={selectedMaster} />
+            <GenericMaster masterKey={selectedMaster} searchValue={searchValue} />
           </CardContent>
         </Card>
       </div>

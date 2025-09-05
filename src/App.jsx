@@ -31,9 +31,10 @@ import GlobalMasters from "./pages/GlobalMasters";
 import DockyardPlans from "./pages/DockyardPlans";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import Hvac from './pages/Hvac';
 
 const queryClient = new QueryClient();
-
+//demo credentials and dashboard on top duplicate search bars 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/users" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Users & Roles</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
           <Route path="/audit" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Audit & Notifications</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
           <Route path="/settings" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Settings</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
+          <Route path="/hvac" element={<RequireAuth><MainLayout><Hvac/></MainLayout></RequireAuth>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
