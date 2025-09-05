@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import api from '@/lib/axios';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import Pagination from '@/pages/masters/Pagination.jsx';
 
 const QUARTER_DATES = [
   { value: '31-03', label: '31 March' },
@@ -44,12 +45,14 @@ const QuartelyHullSurvey = () => {
   const [defects, setDefects] = useState([]);
   const [vessels, setVessels] = useState([]);
   const [compartments, setCompartments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     api.get('/master/vessels/').then(res => setVessels(res.data.data || [])).catch(() => setVessels([]));
     api.get('/master/compartments/').then(res => setCompartments(res.data.data || [])).catch(() => setCompartments([]));
     // Static data for demo
-    setSurveys([
+    const allSurveys = [
       {
         id: 1,
         quarter: '31-03',
@@ -61,8 +64,11 @@ const QuartelyHullSurvey = () => {
           { description: 'Crack in hull', status: 'Open', markings: 'Red', compartment: 1, remarks: 'Needs urgent repair' },
         ],
       },
-    ]);
-  }, []);
+      // Add more demo data here if needed
+    ];
+    setTotalPages(Math.max(1, Math.ceil(allSurveys.length / 10)));
+    setSurveys(allSurveys.slice((currentPage - 1) * 10, currentPage * 10));
+  }, [currentPage]);
 
   const handleAdd = () => {
     setEditId(null);
@@ -159,6 +165,7 @@ const QuartelyHullSurvey = () => {
             onDelete={handleDelete}
             allItems={{ vessels }}
           />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </CardContent>
       </Card>
       <MasterModal

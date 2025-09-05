@@ -8,30 +8,34 @@ import { Button } from '@/components/ui/button';
 import { PlusIcon, MagnifyingGlassIcon, DocumentArrowUpIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import HvacTrialFormModal from '../components/HvacTrialFormModal';
 import { set } from 'date-fns';
+import Pagination from '@/pages/masters/Pagination.jsx';
 
 const Hvac = () => {
   const [trials, setTrials] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const fetchTrials = async () => {
       setLoading(true);
       try {
-        const res = await api.get('shipmodule/trials/?page=1');
-        // Remove unwanted fields
+        const res = await api.get(`shipmodule/trials/?page=${currentPage}`);
         const filtered = Array.isArray(res.data.results)
           ? res.data.results.map(({ created_ip, created_by, modified_by, active, ...rest }) => rest)
           : [];
         setTrials(filtered);
+        setTotalPages(res.data.total_pages || 1);
       } catch (err) {
         setTrials([]);
+        setTotalPages(1);
       }
       setLoading(false);
     };
     fetchTrials();
-  }, [showModal]);
+  }, [showModal, currentPage]);
 
   return (
   <div className="space-y-6 w-full">
@@ -81,25 +85,30 @@ const Hvac = () => {
             {loading ? (
               <div className="text-center text-blue-500">Loading...</div>
             ) : (
-              <MasterTable
-                items={trials}
-                fields={{
-                  title: 'HVAC Trials',
-                  list: [
-                    { key: 'ship_name', label: 'Ship Name' },
-                    { key: 'code', label: 'Code' },
-                    { key: 'date_of_trials', label: 'Date of Trials' },
-                    { key: 'place_of_trials', label: 'Place of Trials' },
-                    { key: 'document_no', label: 'Document No.' },
-                    { key: 'occasion_of_trials', label: 'Occasion of Trials' },
-                    { key: 'authority_for_trials', label: 'Authority for Trials' },
-                    // { key: 'modified_on', label: 'Modified On' },
-                  ]
-                }}
-                onEdit={(trial) => {setShowModal(true); setEditId(trial.id);}}
-                onDelete={() => {}}
-                allItems={{}}
-              />
+              <>
+                <MasterTable
+                  items={trials}
+                  fields={{
+                    title: 'HVAC Trials',
+                    list: [
+                      { key: 'ship_name', label: 'Ship Name' },
+                      { key: 'code', label: 'Code' },
+                      { key: 'date_of_trials', label: 'Date of Trials' },
+                      { key: 'place_of_trials', label: 'Place of Trials' },
+                      { key: 'document_no', label: 'Document No.' },
+                      { key: 'occasion_of_trials', label: 'Occasion of Trials' },
+                      { key: 'authority_for_trials', label: 'Authority for Trials' },
+                      // { key: 'modified_on', label: 'Modified On' },
+                    ]
+                  }}
+                  onEdit={(trial) => {setShowModal(true); setEditId(trial.id);}}
+                  onDelete={() => {}}
+                  allItems={{}}
+                />
+                {!loading && (
+                  <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+                )}
+              </>
             )}
           </CardContent>
         </Card>
