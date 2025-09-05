@@ -22,7 +22,8 @@ const Sidebar = () => {
     { name: 'Global Masters', icon: DocumentTextIcon, href: '/masters' },
     { name: 'Dockyard Plan Approval', icon: DocumentChartBarIcon, href: '/dockyard-plans' },
     { name: 'Quarterly Hull Survey', icon: MagnifyingGlassIcon, href: '/hull-surveys' },
-    { name: 'HVAC', icon: MagnifyingGlassIcon, href: '/hvac' },
+    // Changed HVAC Trials icon to CogIcon for a better representation
+    { name: 'HVAC Trials', icon: CogIcon, href: '/hvac' },
     { name: 'Interactive Drawing', icon: PencilSquareIcon, href: '/drawing' },
     { name: 'Reports', icon: ChartBarIcon, href: '/reports' },
     { name: 'Users & Roles', icon: UserGroupIcon, href: '/users' },

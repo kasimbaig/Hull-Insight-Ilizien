@@ -73,7 +73,7 @@ const Topbar = () => {
         {/* Right side actions */}
         <div className="flex items-center space-x-4">
           {/* Global Masters Dropdown */}
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="border-hull-primary/20 text-hull-primary hover:bg-hull-primary/5">
                 <Squares2X2Icon className="h-4 w-4 mr-2" />
@@ -111,7 +111,7 @@ const Topbar = () => {
                 </a>
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
 
           {/* Search */}
           <div className="relative">
@@ -148,7 +148,7 @@ const Topbar = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white border-hull-secondary shadow-lg z-[1100]">
                 <DropdownMenuLabel className="text-hull-primary">
-                  Captain S. Sharma
+                  {user.name}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-hull-secondary" />
                 <DropdownMenuItem className="hover:bg-hull-primary/5">

@@ -50,7 +50,7 @@ const Login = () => {
     <div className="w-[100vw] h-[100vh] min-h-0 min-w-0 flex items-center justify-center bg-gradient-to-br from-blue-200 via-blue-100 to-blue-300 relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width=\'60\'%20height=\'60\'%20viewBox=\'0%200%2060%2060\'%20xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg%20fill=\'none\'%20fill-rule=\'evenodd\'%3E%3Cg%20fill=\'%2364B5F6\'%20fill-opacity=\'0.10\'%3E%3Ccircle%20cx=\'7\'%20cy=\'7\'%20r=\'7\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20 pointer-events-none"></div>
 
-  <div className="relative w-full max-w-[80vw] md:max-w-[30vw] mx-auto p-0 z-10">
+  <div className="relative w-full max-w-[80vw] md:max-w-[27vw] mx-auto p-0 z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto mb-4 p-3 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 w-16 h-16 flex items-center justify-center shadow-lg">
@@ -146,7 +146,7 @@ const Login = () => {
               {/* Submit Button */}
               <Button 
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2.5 rounded-lg shadow"
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2.5 rounded-sm shadow"
               >
                 Sign In
               </Button>
