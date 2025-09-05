@@ -20,7 +20,7 @@ const OCCASION_CHOICES = [
   { value: 'Audit', label: 'HVAC Audit' },
 ];
 
-const AirFlowTable = ({ rows, setRows, compartments }) => {
+const AirFlowTable = ({ rows, setRows, compartments, onRemove }) => {
   const emptyRow = {
     compartment: '',
     no_of_ducts: '',
@@ -39,7 +39,10 @@ const AirFlowTable = ({ rows, setRows, compartments }) => {
     setRows(newRows);
   };
   const addRow = () => setRows([...rows, { ...emptyRow }]);
-  const removeRow = idx => setRows(rows.filter((_, i) => i !== idx));
+  const removeRow = idx => {
+    setRows(rows.filter((_, i) => i !== idx));
+    if(onRemove) onRemove(rows[idx]);
+};
   return (
     <div className="mb-6">
       <h2 className="font-bold mb-2">Air Flow Measurements</h2>
@@ -89,7 +92,7 @@ const AirFlowTable = ({ rows, setRows, compartments }) => {
   );
 };
 
-const MachineryAirFlowTable = ({ rows, setRows, compartments }) => {
+const MachineryAirFlowTable = ({ rows, setRows, compartments, onRemove }) => {
   const emptyRow = {
     compartment: '',
     no_of_ducts: '',
@@ -108,7 +111,10 @@ const MachineryAirFlowTable = ({ rows, setRows, compartments }) => {
     setRows(newRows);
   };
   const addRow = () => setRows([...rows, { ...emptyRow }]);
-  const removeRow = idx => setRows(rows.filter((_, i) => i !== idx));
+  const removeRow = idx => {
+    setRows(rows.filter((_, i) => i !== idx));
+    if(onRemove) onRemove(rows[idx]);
+};
   return (
     <div className="mb-6">
       <h2 className="font-bold mb-2">Machinery Air Flow Measurements</h2>
@@ -173,6 +179,8 @@ const HvacTrialFormModal = ({ open, onClose, onSuccess, editId }) => {
   const [machineryRows, setMachineryRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [deletedAirRows, setDeletedAirRows] = useState([]);
+  const [deletedMachineryRows, setDeletedMachineryRows] = useState([]);
 
   useEffect(() => {
     api.get('/master/vessels/')
@@ -268,6 +276,18 @@ const HvacTrialFormModal = ({ open, onClose, onSuccess, editId }) => {
                 await api.post('/shipmodule/machinery-measurements/', { ...row, hvac_trial: trialId });
             }
         }
+        // Delete removed AirFlowMeasurement rows
+        for (const row of deletedAirRows) {
+            if (row.id) {
+                await api.delete(`/shipmodule/ac-measurements/${row.id}/`);
+            }
+        }
+        // Delete removed MachineryAirFlowMeasurement rows
+        for (const row of deletedMachineryRows) {
+            if (row.id) {
+                await api.delete(`/shipmodule/machinery-measurements/${row.id}/`);
+            }
+        }
     }
       onSuccess(trialRes.data); // Only close modal from parent after refresh
     } catch (err) {
@@ -323,10 +343,10 @@ const HvacTrialFormModal = ({ open, onClose, onSuccess, editId }) => {
             <Input type="text" name="authority_for_trials" value={form.authority_for_trials} onChange={handleChange} required className="bg-blue-50 border-blue-200" />
           </div>
           <div className="col-span-full">
-            <AirFlowTable rows={airRows} setRows={setAirRows} compartments={compartments} />
+            <AirFlowTable rows={airRows} setRows={setAirRows} compartments={compartments} onRemove={removedRow => setDeletedAirRows([...deletedAirRows, removedRow])} />
           </div>
           <div className="col-span-full">
-            <MachineryAirFlowTable rows={machineryRows} setRows={setMachineryRows} compartments={compartments} />
+            <MachineryAirFlowTable rows={machineryRows} setRows={setMachineryRows} compartments={compartments} onRemove={removedRow => setDeletedMachineryRows([...deletedMachineryRows, removedRow])} />
           </div>
           {error && <div className="col-span-full text-red-500">{error}</div>}
           <div className="col-span-full flex justify-end space-x-2 mt-2">
