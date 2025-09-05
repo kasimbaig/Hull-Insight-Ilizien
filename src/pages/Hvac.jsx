@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import api from '@/lib/axios';
-import MasterTable from './masters/MasterTable';
+import MasterTable from '../components/MasterTable';
 import GenericMaster from './masters/GenericMaster';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, MagnifyingGlassIcon, DocumentArrowUpIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import HvacTrialFormModal from '../components/HvacTrialFormModal';
 import { set } from 'date-fns';
-import Pagination from '@/pages/masters/Pagination.jsx';
+import Pagination from '@/components/ui/Pagination.jsx';
 
 const Hvac = () => {
   const [trials, setTrials] = useState([]);

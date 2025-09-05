@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import MasterTable from '@/pages/masters/MasterTable';
-import MasterModal from '@/pages/masters/MasterModal';
+import MasterTable from '@/components/MasterTable';
+import MasterModal from '@/components/MasterModal';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import api from '@/lib/axios';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import Pagination from '@/pages/masters/Pagination.jsx';
+import Pagination from '@/components/ui/Pagination.jsx';
 
 const QUARTER_DATES = [
   { value: '31-03', label: '31 March' },

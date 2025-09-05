@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Pagination from './Pagination';
+import Pagination from '../../components/ui/Pagination';
 import { toast } from '@/components/ui/use-toast';
 import api from '@/lib/axios';
-import MasterModal from './MasterModal';
-import MasterTable from './MasterTable';
+import MasterModal from '../../components/MasterModal';
+import MasterTable from '../../components/MasterTable';
 import { Button } from '@/components/ui/button';
 
 const masterFields = {
