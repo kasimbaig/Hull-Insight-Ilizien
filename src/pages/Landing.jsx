@@ -44,6 +44,16 @@ const Landing = () => {
     navigate('/login');
   };
 
+  const handleNavClick = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   const slides = [
     {
       title: "WELCOME TO HULL INSIGHT",
@@ -87,10 +97,10 @@ const Landing = () => {
               </div>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="#home" className="text-gray-700 hover:text-blue-900 transition-colors">Home</a>
-              <a href="#about" className="text-gray-700 hover:text-blue-900 transition-colors">About</a>
-              <a href="#services" className="text-gray-700 hover:text-blue-900 transition-colors">Services</a>
-              <a href="#contact" className="text-gray-700 hover:text-blue-900 transition-colors">Contact</a>
+              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-gray-700 hover:text-blue-900 transition-colors">Home</button>
+              <button onClick={() => handleNavClick('about')} className="text-gray-700 hover:text-blue-900 transition-colors">About</button>
+              <button onClick={() => handleNavClick('services')} className="text-gray-700 hover:text-blue-900 transition-colors">Services</button>
+              <button onClick={() => handleNavClick('contact')} className="text-gray-700 hover:text-blue-900 transition-colors">Contact</button>
             </nav>
             <Button 
               onClick={handleLoginClick}
@@ -103,7 +113,7 @@ const Landing = () => {
       </header>
 
       {/* Hero Carousel */}
-      <section className="relative h-96 md:h-[500px] overflow-hidden">
+      <section id="home" className="relative h-96 md:h-[500px] overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={index}
