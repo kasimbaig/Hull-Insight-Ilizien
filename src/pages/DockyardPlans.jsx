@@ -164,20 +164,20 @@ const DockyardPlans = () => {
       submittedDate: '2024-01-08',
       scheduledDate: '2024-03-15'
     },
-    {
-      id: 'DP-2024-004',
-      vessel: 'INS Chennai',
-      command: 'Eastern Naval Command',
-      dockyard: 'Kolkata Dry Dock',
-      reason: 'Hull Inspection',
-      initiator: 'Lt. Commander A. Patel',
-      status: 'Revision Requested',
-      stage: 'Revision',
-      priority: 'Medium',
-      submittedDate: '2024-01-05',
-      reviewerComments: 'Additional safety documentation required',
-      scheduledDate: '2024-02-20'
-    }
+    // {
+    //   id: 'DP-2024-004',
+    //   vessel: 'INS Chennai',
+    //   command: 'Eastern Naval Command',
+    //   dockyard: 'Kolkata Dry Dock',
+    //   reason: 'Hull Inspection',
+    //   initiator: 'Lt. Commander A. Patel',
+    //   status: 'Revision Requested',
+    //   stage: 'Revision',
+    //   priority: 'Medium',
+    //   submittedDate: '2024-01-05',
+    //   reviewerComments: 'Additional safety documentation required',
+    //   scheduledDate: '2024-02-20'
+    // }
   ]);
 
   const calendarEvents = [
@@ -432,9 +432,9 @@ const DockyardPlans = () => {
                       </div>
 
                       <div className="flex items-center space-x-2 ml-4">
-                        <Button variant="ghost" size="sm">
+                        {/* <Button variant="ghost" size="sm">
                           <EyeIcon className="h-4 w-4" />
-                        </Button>
+                        </Button> */}
                         <Button variant="ghost" size="sm" onClick={() => handleEditPlan(plan)}>
                           <PencilIcon className="h-4 w-4" />
                         </Button>
