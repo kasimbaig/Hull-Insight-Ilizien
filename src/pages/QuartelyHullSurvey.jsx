@@ -107,8 +107,10 @@ const QuartelyHullSurvey = () => {
     setModalOpen(true);
   };
 
-  const handleDelete = (row) => {
-    setSurveys(surveys.filter(s => s.id !== row.id));
+  const handleDelete = (id) => {
+    if(window.confirm('Are you sure you want to delete this survey?')) {
+      setSurveys(surveys.filter(s => s.id !== id));
+    }
   };
 
   const handleModalChange = (e) => {
