@@ -268,7 +268,7 @@ const GenericMaster = ({ masterKey, searchValue='', onDataChange }) => {
       let params = {};
       if (key === masterKey) {
         params = { page, order_by: '-id' };
-        if (search) params.search = search;
+        if (searchValue) params.search = searchValue;
       }
       try {
         const res = await api.get(`/master/${endpoint}/`, { params });
@@ -293,16 +293,21 @@ const GenericMaster = ({ masterKey, searchValue='', onDataChange }) => {
     if (!endpoint) return;
     try {
       if (editId) {
-        await api.post(`/master/${endpoint}/`, { ...form, id: editId });
-        toast({ title: `${fields.title} updated successfully!`, variant: 'success' });
+        await api.put(`/master/${endpoint}/${editId}/`, form);
+        toast({ title: `${fields.title} updated successfully!` });
       } else {
         await api.post(`/master/${endpoint}/`, form);
-        toast({ title: `${fields.title} added successfully!`, variant: 'success' });
+        toast({ title: `${fields.title} added successfully!` });
       }
       await refresh();
       closeForm();
     } catch (err) {
-      toast({ title: `Error saving ${fields.title.toLowerCase()}!`, variant: 'destructive' });
+      console.error('API Error:', err);
+      toast({ 
+        title: `Error saving ${fields.title.toLowerCase()}!`, 
+        description: err.response?.data?.message || 'Please try again',
+        variant: 'destructive' 
+      });
     }
   };
 
@@ -311,11 +316,16 @@ const GenericMaster = ({ masterKey, searchValue='', onDataChange }) => {
     const endpoint = apiMap[masterKey];
     if (!endpoint) return;
     try {
-      await api.post(`/master/${endpoint}/`, { id, delete: true });
-      toast({ title: `${fields.title} deleted successfully!`, variant: 'success' });
+      await api.delete(`/master/${endpoint}/${id}/`);
+      toast({ title: `${fields.title} deleted successfully!` });
       await refresh();
     } catch (err) {
-      toast({ title: `Error deleting ${fields.title.toLowerCase()}!`, variant: 'destructive' });
+      console.error('Delete Error:', err);
+      toast({ 
+        title: `Error deleting ${fields.title.toLowerCase()}!`, 
+        description: err.response?.data?.message || 'Please try again',
+        variant: 'destructive' 
+      });
     }
   };
 
@@ -344,7 +354,11 @@ const GenericMaster = ({ masterKey, searchValue='', onDataChange }) => {
       </div>
       <MasterModal
         open={showForm}
-        onOpenChange={setShowForm}
+        onOpenChange={(open) => {
+          if (!open) {
+            closeForm();
+          }
+        }}
         onSubmit={handleSubmit}
         onChange={handleChange}
         form={form}
