@@ -131,10 +131,10 @@ const Dashboard = () => {
           </p>
         </div>
         <div className="flex space-x-3">
-          <Button variant="outline" size="sm">
+          {/* <Button variant="outline" size="sm">
             <ChartBarIcon className="h-4 w-4 mr-2" />
             Generate Report
-          </Button>
+          </Button> */}
           <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
             <DocumentTextIcon className="h-4 w-4 mr-2" />
             New Plan
@@ -155,9 +155,9 @@ const Dashboard = () => {
                   </div>
                   <div className="flex items-center space-x-1 text-sm">
                     <ArrowTrendingUpIcon className="h-3 w-3" />
-                    <span className={kpi.trend.startsWith('+') ? 'text-hull-success' : 'text-hull-accent'}>
+                    {/* <span className={kpi.trend.startsWith('+') ? 'text-hull-success' : 'text-hull-accent'}>
                       {kpi.trend}
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </CardHeader>

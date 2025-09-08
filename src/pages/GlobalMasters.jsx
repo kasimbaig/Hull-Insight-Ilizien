@@ -43,7 +43,7 @@ const GlobalMasters = () => {
         { id: 'damagetype', name: 'Damage Type', description: 'Hull damage classifications' },
         { id: 'severity', name: 'Severity', description: 'Damage severity ratings' },
         { id: 'surveycycle', name: 'Survey Cycle', description: 'Inspection schedules' },
-        { id: 'dynamicfield', name: 'Dynamic Field', description: 'Dynamic survey fields' },
+        // { id: 'dynamicfield', name: 'Dynamic Field', description: 'Dynamic survey fields' },
       ]
     }
   ];
