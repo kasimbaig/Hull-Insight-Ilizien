@@ -60,7 +60,7 @@ const Hvac = () => {
               <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
               Export as CSV
             </Button>
-            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm" onClick={() => { setShowModal(true);}}>
+            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm" onClick={() => { setEditId(null); setShowModal(true);}}>
               <PlusIcon className="h-4 w-4 mr-2" />
               Add New
             </Button>
@@ -68,7 +68,7 @@ const Hvac = () => {
         </div>
       </nav>
       {/* Modal for Adding/Editing HVAC Trials */}
-      <HvacTrialFormModal open={showModal} onClose={() => setShowModal(false)} onSuccess={() => {setShowModal(false);}} editId={editId}/>
+      <HvacTrialFormModal open={showModal} onClose={() => { setShowModal(false); setEditId(null); }} onSuccess={() => {setShowModal(false); setEditId(null);}} editId={editId}/>
       {/* Main Content Area */}
       <div className="w-full">
         <Card className="bg-white/95 shadow-lg rounded-2xl w-full">

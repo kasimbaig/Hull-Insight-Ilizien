@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Calculator, Trash2 } from "lucide-react";
 import api from "@/lib/axios";
 
 const PLACE_CHOICES = [
@@ -20,7 +21,251 @@ const OCCASION_CHOICES = [
   { value: 'Audit', label: 'HVAC Audit' },
 ];
 
+// Modal for inputting multiple readings and calculating averages
+const ReadingsModal = ({ open, onOpenChange, readings, onSave, compartment, numDucts, onDuctsChange, currentRowData }) => {
+  const [localReadings, setLocalReadings] = useState([]);
+  const [numReadings, setNumReadings] = useState(1);
+
+  useEffect(() => {
+    if (open) {
+      // Reset state when modal opens
+      setLocalReadings([]);
+      setNumReadings(1);
+      
+      const existingReadings = readings || [];
+      const ductCount = numDucts || 1;
+      
+      // If we have existing readings, use them
+      if (existingReadings.length > 0) {
+        setLocalReadings(existingReadings);
+        setNumReadings(Math.max(1, existingReadings.length));
+      } else {
+        // Check if this row has calculated averages (not just empty values)
+        const hasCalculatedValues = currentRowData && (
+          (currentRowData.air_flow && currentRowData.air_flow !== '') ||
+          (currentRowData.flow_rate_at_duct && currentRowData.flow_rate_at_duct !== '') ||
+          (currentRowData.design_air_flow_rate && currentRowData.design_air_flow_rate !== '') ||
+          (currentRowData.measured_air_flow_rate && currentRowData.measured_air_flow_rate !== '')
+        );
+        
+        if (hasCalculatedValues) {
+          // If we have calculated averages, reconstruct the readings that would produce those averages
+          // Only fill the first few readings with existing values, leave new ones empty
+          const newReadings = Array.from({ length: ductCount }, (_, index) => {
+            // If we're within the range of existing values, use them
+            if (index < (existingReadings.length || 0)) {
+              return existingReadings[index] || {
+                air_flow: currentRowData?.air_flow || '',
+                flow_rate_at_duct: currentRowData?.flow_rate_at_duct || '',
+                design_air_flow_rate: currentRowData?.design_air_flow_rate || '',
+                measured_air_flow_rate: currentRowData?.measured_air_flow_rate || ''
+              };
+            } else {
+              // For new ducts beyond existing ones, use current averages
+              return {
+                air_flow: currentRowData?.air_flow || '',
+                flow_rate_at_duct: currentRowData?.flow_rate_at_duct || '',
+                design_air_flow_rate: currentRowData?.design_air_flow_rate || '',
+                measured_air_flow_rate: currentRowData?.measured_air_flow_rate || ''
+              };
+            }
+          });
+          setLocalReadings(newReadings);
+          setNumReadings(ductCount);
+        } else {
+          // For new rows or rows without calculated values, start with empty readings
+          const newReadings = Array.from({ length: ductCount }, () => ({
+            air_flow: '',
+            flow_rate_at_duct: '',
+            design_air_flow_rate: '',
+            measured_air_flow_rate: ''
+          }));
+          setLocalReadings(newReadings);
+          setNumReadings(ductCount);
+        }
+      }
+    } else {
+      // Reset state when modal closes
+      setLocalReadings([]);
+      setNumReadings(1);
+    }
+  }, [open, readings, numDucts, currentRowData]);
+
+  const handleReadingChange = (index, field, value) => {
+    const newReadings = [...localReadings];
+    if (!newReadings[index]) {
+      newReadings[index] = { air_flow: '', flow_rate_at_duct: '', design_air_flow_rate: '', measured_air_flow_rate: '' };
+    }
+    newReadings[index][field] = value;
+    setLocalReadings(newReadings);
+  };
+
+  const calculateAverages = () => {
+    const validReadings = localReadings.filter(r => r && Object.values(r).some(val => val && !isNaN(parseFloat(val))));
+    
+    if (validReadings.length === 0) return null;
+
+    const averages = {
+      air_flow: 0,
+      flow_rate_at_duct: 0,
+      design_air_flow_rate: 0,
+      measured_air_flow_rate: 0
+    };
+
+    Object.keys(averages).forEach(field => {
+      const validValues = validReadings
+        .map(r => parseFloat(r[field]))
+        .filter(val => !isNaN(val));
+      
+      if (validValues.length > 0) {
+        averages[field] = (validValues.reduce((sum, val) => sum + val, 0) / validValues.length).toFixed(2);
+      }
+    });
+
+    return averages;
+  };
+
+  const handleSave = () => {
+    const averages = calculateAverages();
+    if (averages) {
+      // Sync the number of ducts with parent row when saving
+      if (onDuctsChange) {
+        onDuctsChange(numReadings);
+      }
+      onSave(averages);
+      onOpenChange(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col" aria-describedby="readings-modal-description">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Calculator className="h-5 w-5" />
+            Calculate Input Readings for {numReadings} number of ducts
+          </DialogTitle>
+          <p id="readings-modal-description" className="text-sm text-gray-600">
+            Enter readings for each duct to calculate averages. Modify values and click "Apply Averages" to update the parent row.
+          </p>
+        </DialogHeader>
+        
+        <div className="space-y-4 overflow-y-auto flex-1 min-h-0">
+          {readings && readings.length > 0 ? (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-sm text-blue-700">
+                <strong>Updating existing readings:</strong> Modify the values below to recalculate averages. 
+                Current averages will be updated when you click "Apply Averages".
+              </p>
+            </div>
+          ) : currentRowData && (currentRowData.air_flow || currentRowData.flow_rate_at_duct || currentRowData.design_air_flow_rate || currentRowData.measured_air_flow_rate) ? (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <p className="text-sm text-yellow-700">
+                <strong>Reconstructing readings:</strong> The modal shows {numReadings} rows with the same values as your current averages. 
+                Modify any values to recalculate new averages.
+              </p>
+            </div>
+          ) : null}
+          <div className="flex items-center space-x-4">
+            <label className="font-medium">Number of Ducts:</label>
+            <Input
+              type="number"
+              min="1"
+              max="20"
+              value={numReadings}
+              onChange={(e) => {
+                const newNum = parseInt(e.target.value) || 1;
+                setNumReadings(newNum);
+                // Don't sync with parent immediately - only when Apply Averages is clicked
+                // Preserve existing readings when changing number of readings
+                const newReadings = Array.from({ length: newNum }, (_, i) => 
+                  localReadings[i] || { air_flow: '', flow_rate_at_duct: '', design_air_flow_rate: '', measured_air_flow_rate: '' }
+                );
+                setLocalReadings(newReadings);
+              }}
+              className="w-20"
+            />
+            <span className="text-sm text-gray-500">(Will sync with parent row when you click "Apply Averages")</span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full border text-sm">
+              <thead className="bg-blue-50">
+                <tr>
+                  <th className="p-2 border">Reading #</th>
+                  <th className="p-2 border">Air Flow</th>
+                  <th className="p-2 border">Flow Rate at Duct</th>
+                  <th className="p-2 border">Design Air Flow Rate</th>
+                  <th className="p-2 border">Measured Air Flow Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: numReadings }, (_, i) => (
+                  <tr key={i}>
+                    <td className="p-2 border font-medium">{i + 1}</td>
+                    <td className="p-2 border">
+                      <Input
+                        type="number"
+                        value={localReadings[i]?.air_flow || ''}
+                        onChange={(e) => handleReadingChange(i, 'air_flow', e.target.value)}
+                        className="bg-blue-50 border-blue-200"
+                      />
+                    </td>
+                    <td className="p-2 border">
+                      <Input
+                        type="number"
+                        value={localReadings[i]?.flow_rate_at_duct || ''}
+                        onChange={(e) => handleReadingChange(i, 'flow_rate_at_duct', e.target.value)}
+                        className="bg-blue-50 border-blue-200"
+                      />
+                    </td>
+                    <td className="p-2 border">
+                      <Input
+                        type="number"
+                        value={localReadings[i]?.design_air_flow_rate || ''}
+                        onChange={(e) => handleReadingChange(i, 'design_air_flow_rate', e.target.value)}
+                        className="bg-blue-50 border-blue-200"
+                      />
+                    </td>
+                    <td className="p-2 border">
+                      <Input
+                        type="number"
+                        value={localReadings[i]?.measured_air_flow_rate || ''}
+                        onChange={(e) => handleReadingChange(i, 'measured_air_flow_rate', e.target.value)}
+                        className="bg-blue-50 border-blue-200"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="font-medium mb-2">Calculated Averages:</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>Air Flow: <span className="font-semibold">{calculateAverages()?.air_flow || '0.00'}</span></div>
+              <div>Flow Rate at Duct: <span className="font-semibold">{calculateAverages()?.flow_rate_at_duct || '0.00'}</span></div>
+              <div>Design Air Flow Rate: <span className="font-semibold">{calculateAverages()?.design_air_flow_rate || '0.00'}</span></div>
+              <div>Measured Air Flow Rate: <span className="font-semibold">{calculateAverages()?.measured_air_flow_rate || '0.00'}</span></div>
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">Apply Averages</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const AirFlowTable = ({ rows, setRows, compartments, onRemove }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentRowIndex, setCurrentRowIndex] = useState(null);
+  const [currentReadings, setCurrentReadings] = useState([]);
+
   const emptyRow = {
     compartment: '',
     no_of_ducts: '',
@@ -33,16 +278,46 @@ const AirFlowTable = ({ rows, setRows, compartments, onRemove }) => {
     observations: '',
     remarks: '',
   };
+
   const handleChange = (idx, e) => {
     const newRows = [...rows];
     newRows[idx][e.target.name] = e.target.value;
     setRows(newRows);
   };
+
+  const handleCalculateAverage = (idx) => {
+    setCurrentRowIndex(idx);
+    // If readings exist, use them; otherwise start with empty readings
+    const existingReadings = rows[idx].readings || [];
+    setCurrentReadings(existingReadings);
+    setModalOpen(true);
+  };
+
+  const handleDuctsChange = (newNumDucts) => {
+    if (currentRowIndex !== null && rows && rows[currentRowIndex]) {
+      const newRows = [...rows];
+      if (newRows[currentRowIndex]) {
+        newRows[currentRowIndex].no_of_ducts = newNumDucts.toString();
+        setRows(newRows);
+      }
+    }
+  };
+
+  const handleSaveAverages = (averages) => {
+    const newRows = [...rows];
+    newRows[currentRowIndex] = {
+      ...newRows[currentRowIndex],
+      ...averages,
+      readings: currentReadings
+    };
+    setRows(newRows);
+  };
+
   const addRow = () => setRows([...rows, { ...emptyRow }]);
   const removeRow = idx => {
     setRows(rows.filter((_, i) => i !== idx));
     if(onRemove) onRemove(rows[idx]);
-};
+  };
   return (
     <div className="mb-6">
       <h2 className="font-bold mb-2">Air Flow Measurements</h2>
@@ -81,18 +356,56 @@ const AirFlowTable = ({ rows, setRows, compartments, onRemove }) => {
                 <td className="p-1"><Input name="served_by" value={row.served_by} onChange={e => handleChange(idx, e)} className="bg-blue-50 border-blue-200" /></td>
                 <td className="p-1"><Input name="observations" value={row.observations} onChange={e => handleChange(idx, e)} className="bg-blue-50 border-blue-200" /></td>
                 <td className="p-1"><Input name="remarks" value={row.remarks} onChange={e => handleChange(idx, e)} className="bg-blue-50 border-blue-200" /></td>
-                <td className="p-1"><Button variant="destructive" type="button" size="sm" onClick={() => removeRow(idx)}>Remove</Button></td>
+                <td className="p-1">
+                  <div className="flex space-x-1">
+                    <Button 
+                      variant="outline" 
+                      type="button" 
+                      size="sm" 
+                      onClick={() => handleCalculateAverage(idx)}
+                      className="p-2 h-8 w-8"
+                      title="Calculate Average"
+                    >
+                      <Calculator className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      type="button" 
+                      size="sm" 
+                      onClick={() => removeRow(idx)}
+                      className="p-2 h-8 w-8"
+                      title="Remove Row"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
         <Button size="sm" type="button" onClick={addRow}>Add Row</Button>
+      
+      <ReadingsModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        readings={currentReadings}
+        onSave={handleSaveAverages}
+        compartment={currentRowIndex !== null ? rows[currentRowIndex]?.compartment || 'Unknown' : ''}
+        numDucts={currentRowIndex !== null ? parseInt(rows[currentRowIndex]?.no_of_ducts) || 1 : 1}
+        onDuctsChange={handleDuctsChange}
+        currentRowData={currentRowIndex !== null ? rows[currentRowIndex] : null}
+      />
     </div>
   );
 };
 
 const MachineryAirFlowTable = ({ rows, setRows, compartments, onRemove }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentRowIndex, setCurrentRowIndex] = useState(null);
+  const [currentReadings, setCurrentReadings] = useState([]);
+
   const emptyRow = {
     compartment: '',
     no_of_ducts: '',
@@ -105,16 +418,46 @@ const MachineryAirFlowTable = ({ rows, setRows, compartments, onRemove }) => {
     observations: '',
     remarks: '',
   };
+
   const handleChange = (idx, e) => {
     const newRows = [...rows];
     newRows[idx][e.target.name] = e.target.value;
     setRows(newRows);
   };
+
+  const handleCalculateAverage = (idx) => {
+    setCurrentRowIndex(idx);
+    // If readings exist, use them; otherwise start with empty readings
+    const existingReadings = rows[idx].readings || [];
+    setCurrentReadings(existingReadings);
+    setModalOpen(true);
+  };
+
+  const handleDuctsChange = (newNumDucts) => {
+    if (currentRowIndex !== null && rows && rows[currentRowIndex]) {
+      const newRows = [...rows];
+      if (newRows[currentRowIndex]) {
+        newRows[currentRowIndex].no_of_ducts = newNumDucts.toString();
+        setRows(newRows);
+      }
+    }
+  };
+
+  const handleSaveAverages = (averages) => {
+    const newRows = [...rows];
+    newRows[currentRowIndex] = {
+      ...newRows[currentRowIndex],
+      ...averages,
+      readings: currentReadings
+    };
+    setRows(newRows);
+  };
+
   const addRow = () => setRows([...rows, { ...emptyRow }]);
   const removeRow = idx => {
     setRows(rows.filter((_, i) => i !== idx));
     if(onRemove) onRemove(rows[idx]);
-};
+  };
   return (
     <div className="mb-6">
       <h2 className="font-bold mb-2">Machinery Air Flow Measurements</h2>
@@ -153,13 +496,46 @@ const MachineryAirFlowTable = ({ rows, setRows, compartments, onRemove }) => {
                 <td className="p-1"><Input name="served_by" value={row.served_by} onChange={e => handleChange(idx, e)} className="bg-blue-50 border-blue-200" /></td>
                 <td className="p-1"><Input name="observations" value={row.observations} onChange={e => handleChange(idx, e)} className="bg-blue-50 border-blue-200" /></td>
                 <td className="p-1"><Input name="remarks" value={row.remarks} onChange={e => handleChange(idx, e)} className="bg-blue-50 border-blue-200" /></td>
-                <td className="p-1"><Button variant="destructive" type="button" size="sm" onClick={() => removeRow(idx)}>Remove</Button></td>
+                <td className="p-1">
+                  <div className="flex space-x-1">
+                    <Button 
+                      variant="outline" 
+                      type="button" 
+                      size="sm" 
+                      onClick={() => handleCalculateAverage(idx)}
+                      className="p-2 h-8 w-8"
+                      title="Calculate Average"
+                    >
+                      <Calculator className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      type="button" 
+                      size="sm" 
+                      onClick={() => removeRow(idx)}
+                      className="p-2 h-8 w-8"
+                      title="Remove Row"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
     <Button size="sm" type="button" onClick={addRow}>Add Row</Button>
+    
+    <ReadingsModal
+      open={modalOpen}
+      onOpenChange={setModalOpen}
+      readings={currentReadings}
+      onSave={handleSaveAverages}
+      compartment={currentRowIndex !== null ? rows[currentRowIndex]?.compartment || 'Unknown' : ''}
+      numDucts={currentRowIndex !== null ? parseInt(rows[currentRowIndex]?.no_of_ducts) || 1 : 1}
+      onDuctsChange={handleDuctsChange}
+    />
     </div>
   );
 };
@@ -297,7 +673,7 @@ const HvacTrialFormModal = ({ open, onClose, onSuccess, editId }) => {
   };
 //improve toast and on update display fields inside the modals
   return (
-    <Dialog open={open} onOpenChange={v => { if (!v) { setAirRows([]); setMachineryRows([]); } }}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="w-[90vw] max-w-[1400px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{editId ? 'Edit HVAC Trial' : 'Add HVAC Trial'}</DialogTitle>
@@ -351,7 +727,7 @@ const HvacTrialFormModal = ({ open, onClose, onSuccess, editId }) => {
           {error && <div className="col-span-full text-red-500">{error}</div>}
           <div className="col-span-full flex justify-end space-x-2 mt-2">
             <DialogFooter className="flex flex-row gap-2">
-              <Button type="button" variant="outline" onClick={() => { setAirRows([]); setMachineryRows([]); onClose(); }}>Cancel</Button>
+              <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
               <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>{editId ? 'Update' : 'Add'}</Button>
             </DialogFooter>
           </div>
