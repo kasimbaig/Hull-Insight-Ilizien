@@ -20,7 +20,7 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navigation = [
-    { name: 'Dashboard', icon: Squares2X2Icon, href: '/' },
+    { name: 'Dashboard', icon: Squares2X2Icon, href: '/dashboard' },
     { name: 'Global Masters', icon: DocumentTextIcon, href: '/masters' },
     { name: 'Dockyard Plan Approval', icon: DocumentChartBarIcon, href: '/dockyard-plans' },
     { name: 'Quarterly Hull Survey', icon: MagnifyingGlassIcon, href: '/hull-surveys' },
