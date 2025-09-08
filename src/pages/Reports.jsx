@@ -140,14 +140,22 @@ const Reports = () => {
     setLoadingStates(prev => ({ ...prev, vessels: true }));
     try {
       const response = await getRequest('/master/vessels/');
-      const vesselsData = response?.data || response?.results || response || [];
+      console.log('Vessels API Response:', response); // Debug log
       
-      const transformedVessels = Array.isArray(vesselsData) 
-        ? vesselsData.map((vessel) => ({
-            id: vessel.id || 0,
-            name: vessel.name || vessel.vessel_name || `Vessel ${vessel.id || 'Unknown'}`
-          }))
-        : [];
+      // Handle different response structures
+      let vesselsData = [];
+      if (Array.isArray(response)) {
+        vesselsData = response;
+      } else if (response?.data && Array.isArray(response.data)) {
+        vesselsData = response.data;
+      } else if (response?.results && Array.isArray(response.results)) {
+        vesselsData = response.results;
+      }
+      
+      const transformedVessels = vesselsData.map((vessel) => ({
+        id: vessel.id || 0,
+        name: vessel.name || vessel.vessel_name || `Vessel ${vessel.id || 'Unknown'}`
+      }));
       
       setReportData(prev => ({ ...prev, vessels: transformedVessels }));
       toast({
@@ -158,7 +166,7 @@ const Reports = () => {
       console.error("Error fetching vessels:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch vessels list",
+        description: `Failed to fetch vessels list: ${error.message || 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
@@ -202,7 +210,9 @@ const Reports = () => {
     setLoadingStates(prev => ({ ...prev, hvac: true }));
     try {
       const endpoint = `/shipmodule/ship-report/${shipId}/`;
+      console.log('Fetching HVAC reports from:', endpoint); // Debug log
       const response = await getRequest(endpoint);
+      console.log('HVAC API Response:', response); // Debug log
       
       const hvacReport = {
         ship_id: response.ship_id || shipId,
@@ -218,7 +228,7 @@ const Reports = () => {
       console.error("Error fetching HVAC reports:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch HVAC reports for the selected vessel",
+        description: `Failed to fetch HVAC reports: ${error.message || 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
