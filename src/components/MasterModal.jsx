@@ -11,7 +11,7 @@ const getModalWidth = (fieldCount) => {
   return 'max-w-lg';
 };
 
-const MasterModal = ({ open, onOpenChange, onSubmit, onChange, form, fields, editId, onCancel }) => {
+const MasterModal = ({ open, onOpenChange, onSubmit, onChange, form, fields, editId, onCancel, children }) => {
   const fieldCount = fields.list.length;
   const modalWidth = getModalWidth(fieldCount);
   const useGrid = fieldCount > 3;
@@ -81,6 +81,10 @@ const MasterModal = ({ open, onOpenChange, onSubmit, onChange, form, fields, edi
               )}
             </div>
           ))}
+          
+          {/* Render children content */}
+          {children}
+          
           <div className={useGrid ? 'col-span-full flex justify-end space-x-2 mt-2' : ''}>
             <DialogFooter className="flex flex-row gap-2">
               <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>

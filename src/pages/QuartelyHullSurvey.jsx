@@ -64,7 +64,29 @@ const QuartelyHullSurvey = () => {
           { description: 'Crack in hull', status: 'Open', markings: 'Red', compartment: 1, remarks: 'Needs urgent repair' },
         ],
       },
-      // Add more demo data here if needed
+      {
+        id: 2,
+        quarter: '30-06',
+        date: '2025-06-30',
+        ship: 2,
+        reporting_officer: 'Jane Smith',
+        status: 'Closed',
+        defects: [
+          { description: 'Rust on deck', status: 'Closed', markings: 'Yellow', compartment: 2, remarks: 'Repaired successfully' },
+          { description: 'Leak in engine room', status: 'In Progress', markings: 'Orange', compartment: 3, remarks: 'Under investigation' },
+        ],
+      },
+      {
+        id: 3,
+        quarter: '30-09',
+        date: '2025-09-30',
+        ship: 3,
+        reporting_officer: 'Mike Johnson',
+        status: 'In Progress',
+        defects: [
+          { description: 'Paint peeling', status: 'Open', markings: 'Blue', compartment: 4, remarks: 'Scheduled for repainting' },
+        ],
+      },
     ];
     setTotalPages(Math.max(1, Math.ceil(allSurveys.length / 10)));
     setSurveys(allSurveys.slice((currentPage - 1) * 10, currentPage * 10));
@@ -80,7 +102,7 @@ const QuartelyHullSurvey = () => {
   const handleEdit = (row) => {
     setEditId(row.id);
     setForm({ ...row, defects: row.defects || [] });
-    setDefects(row.defects || []);
+    setDefects([...(row.defects || [])]); // Create a copy of the defects array
     setModalOpen(true);
   };
 
@@ -103,10 +125,15 @@ const QuartelyHullSurvey = () => {
 
   const handleModalSubmit = (e) => {
     e.preventDefault();
+    const surveyData = { 
+      ...form, 
+      defects: [...defects] // Create a copy of the defects array
+    };
+    
     if (editId) {
-      setSurveys(surveys.map(s => s.id === editId ? { ...form, defects } : s));
+      setSurveys(surveys.map(s => s.id === editId ? surveyData : s));
     } else {
-      setSurveys([{ ...form, defects, id: Date.now() }, ...surveys]);
+      setSurveys([{ ...surveyData, id: Date.now() }, ...surveys]);
     }
     setModalOpen(false);
   };
@@ -179,44 +206,103 @@ const QuartelyHullSurvey = () => {
         onCancel={() => setModalOpen(false)}
       >
         <div className="col-span-full mt-4">
-          <h2 className="font-bold mb-2">Defects & Observations</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full border mb-2 text-sm">
-              <thead className="bg-blue-50">
-                <tr>
-                  <th className="p-2">Description</th>
-                  <th className="p-2">Status</th>
-                  <th className="p-2">Markings</th>
-                  <th className="p-2">Compartment</th>
-                  <th className="p-2">Remarks</th>
-                  <th className="p-2"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {defects.map((row, idx) => (
-                  <tr key={idx} className="even:bg-blue-50">
-                    <td className="p-1"><input name="description" value={row.description} onChange={e => handleDefectChange(idx, e)} className="bg-blue-50 border-blue-200 rounded px-2 py-1 w-full" /></td>
-                    <td className="p-1">
-                      <select name="status" value={row.status} onChange={e => handleDefectChange(idx, e)} className="bg-blue-50 border-blue-200 rounded px-2 py-1 w-full">
-                        <option value="">Select</option>
-                        {STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                      </select>
-                    </td>
-                    <td className="p-1"><input name="markings" value={row.markings} onChange={e => handleDefectChange(idx, e)} className="bg-blue-50 border-blue-200 rounded px-2 py-1 w-full" /></td>
-                    <td className="p-1">
-                      <select name="compartment" value={row.compartment} onChange={e => handleDefectChange(idx, e)} className="bg-blue-50 border-blue-200 rounded px-2 py-1 w-full">
-                        <option value="">Select</option>
-                        {compartments.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                      </select>
-                    </td>
-                    <td className="p-1"><input name="remarks" value={row.remarks} onChange={e => handleDefectChange(idx, e)} className="bg-blue-50 border-blue-200 rounded px-2 py-1 w-full" /></td>
-                    <td className="p-1"><Button variant="destructive" size="sm" type="button" onClick={() => removeDefectRow(idx)}>Remove</Button></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-bold text-lg">Defects & Observations</h2>
+            <Button size="sm" type="button" onClick={addDefectRow} className="bg-green-600 hover:bg-green-700">
+              + Add Defect
+            </Button>
           </div>
-          <Button size="sm" type="button" onClick={addDefectRow}>Add Row</Button>
+          
+          {defects.length === 0 ? (
+            <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-300 rounded-lg">
+              <p>No defects added yet. Click "Add Defect" to start.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto border rounded-lg">
+              <table className="min-w-full text-sm">
+                <thead className="bg-blue-50 border-b">
+                  <tr>
+                    <th className="p-3 text-left font-semibold text-gray-700">Description</th>
+                    <th className="p-3 text-left font-semibold text-gray-700">Status</th>
+                    <th className="p-3 text-left font-semibold text-gray-700">Markings</th>
+                    <th className="p-3 text-left font-semibold text-gray-700">Compartment</th>
+                    <th className="p-3 text-left font-semibold text-gray-700">Remarks</th>
+                    <th className="p-3 text-center font-semibold text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {defects.map((row, idx) => (
+                    <tr key={idx} className="border-b hover:bg-gray-50">
+                      <td className="p-2">
+                        <input 
+                          name="description" 
+                          value={row.description} 
+                          onChange={e => handleDefectChange(idx, e)} 
+                          placeholder="Enter defect description"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        />
+                      </td>
+                      <td className="p-2">
+                        <select 
+                          name="status" 
+                          value={row.status} 
+                          onChange={e => handleDefectChange(idx, e)} 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="">Select Status</option>
+                          {STATUS_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="p-2">
+                        <input 
+                          name="markings" 
+                          value={row.markings} 
+                          onChange={e => handleDefectChange(idx, e)} 
+                          placeholder="Enter markings"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        />
+                      </td>
+                      <td className="p-2">
+                        <select 
+                          name="compartment" 
+                          value={row.compartment} 
+                          onChange={e => handleDefectChange(idx, e)} 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="">Select Compartment</option>
+                          {compartments.map(c => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="p-2">
+                        <input 
+                          name="remarks" 
+                          value={row.remarks} 
+                          onChange={e => handleDefectChange(idx, e)} 
+                          placeholder="Enter remarks"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        />
+                      </td>
+                      <td className="p-2 text-center">
+                        <Button 
+                          variant="destructive" 
+                          size="sm" 
+                          type="button" 
+                          onClick={() => removeDefectRow(idx)}
+                          className="px-3 py-1"
+                        >
+                          Remove
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </MasterModal>
     </div>
