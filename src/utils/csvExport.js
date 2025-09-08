@@ -70,15 +70,25 @@ export const formatDataForExport = (data, type) => {
     
     case 'docking':
       return data.map(item => ({
-        'Vessel Name': item.vessel_name || '',
-        'Docking Purpose': item.docking_purpose || '',
+        'Plan ID': item.id || '',
+        'Vessel Name': item.vesselName || item.vessel || '',
+        'Docking Purpose': item.dockingPurposeName || item.dockingPurpose || '',
+        'Docking Version': item.dockingVersion || '',
+        'Entry Direction': item.entryDirectionName || item.entryDirection || '',
+        'Vessel Length (m)': item.length || '',
+        'Vessel Beam (m)': item.beam || '',
+        'Vessel Draught (m)': item.draught || '',
+        'List (degrees)': item.list || '',
+        'Trim (degrees)': item.trim || '',
+        'Metacentric Height (m)': item.metacentricHeight || '',
+        'Weight Changes (tons)': item.weightChanges || '',
+        'Refitting Authority': item.refittingAuthorityName || item.refittingAuthority || '',
+        'Command HQ': item.commandHqName || item.commandHq || '',
         'Status': item.status || '',
-        'Created Date': item.created_date || '',
-        'Refitting Authority': item.refitting_authority || '',
-        'Command HQ': item.command_hq || '',
-        'Vessel Length': item.vessel_length || '',
-        'Vessel Beam': item.vessel_beam || '',
-        'Vessel Draught': item.vessel_draught || ''
+        'Priority': item.priority || '',
+        'Submitted Date': item.submittedDate || '',
+        'Scheduled Date': item.scheduledDate || '',
+        'Approved Date': item.approvedDate || ''
       }));
     
     case 'survey':
