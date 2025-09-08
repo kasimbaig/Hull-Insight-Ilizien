@@ -17,23 +17,93 @@ import {
   DocumentArrowDownIcon
 } from '@heroicons/react/24/outline';
 import { exportToCSV, formatDataForExport } from '@/utils/csvExport';
+import DockingPlanForm from '@/components/DockingPlanForm';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const DockyardPlans = () => {
   const [activeTab, setActiveTab] = useState('plans');
+  const [showForm, setShowForm] = useState(false);
+  const [editData, setEditData] = useState(null);
 
   const handleExportCSV = () => {
     const formattedData = formatDataForExport(dockyardPlans, 'docking');
     exportToCSV(formattedData, 'dockyard-plans');
   };
 
-  const dockyardPlans = [
+  const handleAddPlan = () => {
+    setEditData(null);
+    setShowForm(true);
+  };
+
+  const handleEditPlan = (plan) => {
+    setEditData(plan);
+    setShowForm(true);
+  };
+
+  const handleFormSubmit = (formData) => {
+    if (editData) {
+      // Update existing plan
+      setDockyardPlans(prev => prev.map(plan => 
+        plan.id === editData.id 
+          ? { 
+              ...plan, 
+              ...formData,
+              vesselName: formData.vessel,
+              dockingPurposeName: formData.dockingPurpose,
+              entryDirectionName: formData.entryDirection,
+              refittingAuthorityName: formData.refittingAuthority,
+              commandHqName: formData.commandHq
+            }
+          : plan
+      ));
+    } else {
+      // Add new plan
+      const newPlan = {
+        id: `DP-${new Date().getFullYear()}-${String(dockyardPlans.length + 1).padStart(3, '0')}`,
+        ...formData,
+        vesselName: formData.vessel,
+        dockingPurposeName: formData.dockingPurpose,
+        entryDirectionName: formData.entryDirection,
+        refittingAuthorityName: formData.refittingAuthority,
+        commandHqName: formData.commandHq,
+        status: 'Draft',
+        stage: 'Draft',
+        priority: 'Medium',
+        submittedDate: new Date().toISOString().split('T')[0],
+        scheduledDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      };
+      setDockyardPlans(prev => [...prev, newPlan]);
+    }
+    setShowForm(false);
+    setEditData(null);
+  };
+
+  const handleFormCancel = () => {
+    setShowForm(false);
+    setEditData(null);
+  };
+
+  const [dockyardPlans, setDockyardPlans] = useState([
     {
       id: 'DP-2024-001',
-      vessel: 'INS Vikrant',
-      command: 'Western Naval Command',
-      dockyard: 'Cochin Shipyard',
-      reason: 'Routine Maintenance',
-      initiator: 'Captain S. Sharma',
+      vessel: 'INS_Vikrant',
+      vesselName: 'INS Vikrant',
+      dockingPurpose: 'Routine_Maintenance',
+      dockingPurposeName: 'Routine Maintenance',
+      dockingVersion: 'v2.1',
+      entryDirection: 'Bow_First',
+      entryDirectionName: 'Bow First',
+      length: 262.5,
+      beam: 60.0,
+      draught: 8.4,
+      list: 0.5,
+      trim: 1.2,
+      metacentricHeight: 2.5,
+      weightChanges: 150.0,
+      refittingAuthority: 'Cochin_Shipyard',
+      refittingAuthorityName: 'Cochin Shipyard Limited',
+      commandHq: 'Western_Naval_Command',
+      commandHqName: 'Western Naval Command',
       status: 'Approved',
       stage: 'Approved',
       priority: 'Medium',
@@ -43,11 +113,24 @@ const DockyardPlans = () => {
     },
     {
       id: 'DP-2024-002',
-      vessel: 'INS Vikramaditya',
-      command: 'Western Naval Command',
-      dockyard: 'Mumbai Naval Dockyard',
-      reason: 'Emergency Repair',
-      initiator: 'Commander R. Nair',
+      vessel: 'INS_Vikramaditya',
+      vesselName: 'INS Vikramaditya',
+      dockingPurpose: 'Emergency_Repair',
+      dockingPurposeName: 'Emergency Repair',
+      dockingVersion: 'v1.8',
+      entryDirection: 'Stern_First',
+      entryDirectionName: 'Stern First',
+      length: 284.0,
+      beam: 60.0,
+      draught: 10.2,
+      list: 0.3,
+      trim: 0.8,
+      metacentricHeight: 3.2,
+      weightChanges: 200.0,
+      refittingAuthority: 'Mazagon_Dock',
+      refittingAuthorityName: 'Mazagon Dock Shipbuilders Limited',
+      commandHq: 'Western_Naval_Command',
+      commandHqName: 'Western Naval Command',
       status: 'Under Review',
       stage: 'Review',
       priority: 'High',
@@ -57,11 +140,24 @@ const DockyardPlans = () => {
     },
     {
       id: 'DP-2024-003',
-      vessel: 'INS Kolkata',
-      command: 'Eastern Naval Command',
-      dockyard: 'Garden Reach Shipyard',
-      reason: 'Scheduled Overhaul',
-      initiator: 'Captain M. Singh',
+      vessel: 'INS_Kolkata',
+      vesselName: 'INS Kolkata',
+      dockingPurpose: 'Scheduled_Overhaul',
+      dockingPurposeName: 'Scheduled Overhaul',
+      dockingVersion: 'v2.0',
+      entryDirection: 'Port_Side',
+      entryDirectionName: 'Port Side',
+      length: 163.0,
+      beam: 17.0,
+      draught: 6.5,
+      list: 0.2,
+      trim: 0.5,
+      metacentricHeight: 1.8,
+      weightChanges: 100.0,
+      refittingAuthority: 'Garden_Reach',
+      refittingAuthorityName: 'Garden Reach Shipbuilders & Engineers',
+      commandHq: 'Eastern_Naval_Command',
+      commandHqName: 'Eastern Naval Command',
       status: 'Initiated',
       stage: 'Draft',
       priority: 'Low',
@@ -82,7 +178,7 @@ const DockyardPlans = () => {
       reviewerComments: 'Additional safety documentation required',
       scheduledDate: '2024-02-20'
     }
-  ];
+  ]);
 
   const calendarEvents = [
     {
@@ -148,7 +244,7 @@ const DockyardPlans = () => {
   return (
     <div className="space-y-6">
       {/* Top Navbar with Gradient and Sticky Heading */}
-      <nav className="w-full bg-gradient-to-r from-blue-200 via-blue-100 to-blue-300 border-b border-blue-300 sticky top-0 z-10 shadow py-4">
+      <nav className="w-full bg-gradient-to-r from-blue-200 via-blue-100 to-blue-300 border-b border-blue-300 z-10 shadow py-4">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
           <div>
             <h1 className="text-2xl font-bold text-hull-primary">Dockyard Plan Approval</h1>
@@ -163,7 +259,7 @@ const DockyardPlans = () => {
               <CalendarIcon className="h-4 w-4 mr-2" />
               View Calendar
             </Button> */}
-            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
+            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm" onClick={handleAddPlan}>
               <PlusIcon className="h-4 w-4 mr-2" />
               New Docking Plan
             </Button>
@@ -266,14 +362,14 @@ const DockyardPlans = () => {
                           </div>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                           <div className="flex items-center space-x-2">
                             <BuildingOffice2Icon className="h-4 w-4 text-hull-primary" />
-                            <span className="font-medium text-foreground">{plan.vessel}</span>
+                            <span className="font-medium text-foreground">{plan.vesselName || plan.vessel}</span>
                           </div>
                           <div className="flex items-center space-x-2">
                             <MapPinIcon className="h-4 w-4 text-hull-primary" />
-                            <span className="text-sm text-muted-foreground">{plan.dockyard}</span>
+                            <span className="text-sm text-muted-foreground">{plan.refittingAuthorityName || plan.refittingAuthority}</span>
                           </div>
                           <div className="flex items-center space-x-2">
                             <CalendarIcon className="h-4 w-4 text-hull-primary" />
@@ -281,13 +377,46 @@ const DockyardPlans = () => {
                               Scheduled: {plan.scheduledDate}
                             </span>
                           </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm text-muted-foreground">
+                              Purpose: {plan.dockingPurposeName || plan.dockingPurpose}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* New Technical Details */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3 p-3 bg-gray-50 rounded-lg">
+                          <div className="text-sm">
+                            <span className="font-medium text-gray-600">Dimensions:</span>
+                            <div className="text-gray-800">
+                              L: {plan.length}m × B: {plan.beam}m × D: {plan.draught}m
+                            </div>
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-medium text-gray-600">Stability:</span>
+                            <div className="text-gray-800">
+                              List: {plan.list}° | Trim: {plan.trim}°
+                            </div>
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-medium text-gray-600">Entry:</span>
+                            <div className="text-gray-800">
+                              {plan.entryDirectionName || plan.entryDirection}
+                            </div>
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-medium text-gray-600">Version:</span>
+                            <div className="text-gray-800">
+                              {plan.dockingVersion}
+                            </div>
+                          </div>
                         </div>
 
                         <div className="flex items-center justify-between">
                           <div className="text-sm text-muted-foreground">
-                            <span>Reason: {plan.reason}</span>
+                            <span>Purpose: {plan.dockingPurposeName || plan.dockingPurpose}</span>
                             <span className="mx-2">•</span>
-                            <span>Initiated by: {plan.initiator}</span>
+                            <span>Command: {plan.commandHqName || plan.commandHq}</span>
                             <span className="mx-2">•</span>
                             <span>Submitted: {plan.submittedDate}</span>
                           </div>
@@ -306,7 +435,7 @@ const DockyardPlans = () => {
                         <Button variant="ghost" size="sm">
                           <EyeIcon className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleEditPlan(plan)}>
                           <PencilIcon className="h-4 w-4" />
                         </Button>
                         {plan.status === 'Under Review' && (
@@ -538,6 +667,22 @@ const DockyardPlans = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Docking Plan Form Modal */}
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editData ? 'Edit Docking Plan' : 'Create New Docking Plan'}
+            </DialogTitle>
+          </DialogHeader>
+          <DockingPlanForm
+            onSubmit={handleFormSubmit}
+            onCancel={handleFormCancel}
+            editData={editData}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

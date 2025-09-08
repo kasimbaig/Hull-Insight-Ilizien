@@ -48,7 +48,7 @@ const Login = () => {
 
   return (
     <div className="w-[100vw] h-[100vh] min-h-0 min-w-0 flex items-center justify-center bg-gradient-to-br from-blue-200 via-blue-100 to-blue-300 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width=\'60\'%20height=\'60\'%20viewBox=\'0%200%2060%2060\'%20xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg%20fill=\'none\'%20fill-rule=\'evenodd\'%3E%3Cg%20fill=\'%2364B5F6\'%20fill-opacity=\'0.10\'%3E%3Ccircle%20cx=\'7\'%20cy=\'7\'%20r=\'7\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%2364B5F6%22%20fill-opacity%3D%220.10%22%3E%3Ccircle%20cx%3D%227%22%20cy%3D%227%22%20r%3D%227%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20 pointer-events-none"></div>
 
   <div className="relative w-full max-w-[80vw] md:max-w-[27vw] mx-auto p-0 z-10">
         {/* Header */}
