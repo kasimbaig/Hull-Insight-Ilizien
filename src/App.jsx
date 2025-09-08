@@ -34,6 +34,9 @@ import NotFound from "./pages/NotFound";
 import Hvac from './pages/Hvac';
 import QuartelyHullSurvey from './pages/QuartelyHullSurvey';
 import InteractiveDrawing from './pages/InteractiveDrawing.jsx';
+import Reports from './pages/Reports';
+import ManageUsers from './pages/ManageUsers';
+import ManageUserRoles from './pages/ManageUserRoles';
 
 const queryClient = new QueryClient();
 //demo credentials and dashboard on top duplicate search bars 
@@ -50,8 +53,9 @@ const App = () => (
           <Route path="/dockyard-plans" element={<RequireAuth><MainLayout><DockyardPlans /></MainLayout></RequireAuth>} />
           <Route path="/hull-surveys" element={<RequireAuth><MainLayout><QuartelyHullSurvey /></MainLayout></RequireAuth>} />
           <Route path="/drawing" element={<RequireAuth><MainLayout><InteractiveDrawing /></MainLayout></RequireAuth>} />
-          <Route path="/reports" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Reports</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
-          <Route path="/users" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Users & Roles</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
+          <Route path="/reports" element={<RequireAuth><MainLayout><Reports /></MainLayout></RequireAuth>} />
+          <Route path="/manage-users" element={<RequireAuth><MainLayout><ManageUsers /></MainLayout></RequireAuth>} />
+          <Route path="/manage-roles" element={<RequireAuth><MainLayout><ManageUserRoles /></MainLayout></RequireAuth>} />
           <Route path="/audit" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Audit & Notifications</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
           <Route path="/settings" element={<RequireAuth><MainLayout><div className="p-8 text-center"><h2 className="text-2xl font-bold text-foreground">Settings</h2><p className="text-muted-foreground">Coming Soon</p></div></MainLayout></RequireAuth>} />
           <Route path="/hvac" element={<RequireAuth><MainLayout><Hvac/></MainLayout></RequireAuth>} />
