@@ -135,10 +135,10 @@ const Dashboard = () => {
             <ChartBarIcon className="h-4 w-4 mr-2" />
             Generate Report
           </Button> */}
-          <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
+          {/* <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
             <DocumentTextIcon className="h-4 w-4 mr-2" />
             New Plan
-          </Button>
+          </Button> */}
         </div>
       </div>
 
