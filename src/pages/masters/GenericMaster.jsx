@@ -162,6 +162,8 @@ const apiMap = {
   operationalstatus: 'operationalstatuses',
   module: 'modules',
   submodule: 'submodules',
+  surveycycle: 'surveycycles',
+  dynamicfield: 'dynamicfields',
   // Add more as needed
 };
 
