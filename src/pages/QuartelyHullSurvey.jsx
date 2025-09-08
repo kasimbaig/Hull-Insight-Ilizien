@@ -4,8 +4,9 @@ import MasterModal from '@/components/MasterModal';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import api from '@/lib/axios';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/components/ui/Pagination.jsx';
+import { exportToCSV, formatDataForExport } from '@/utils/csvExport';
 
 const QUARTER_DATES = [
   { value: '31-03', label: '31 March' },
@@ -123,6 +124,11 @@ const QuartelyHullSurvey = () => {
   const addDefectRow = () => setDefects([...defects, { ...initialDefect }]);
   const removeDefectRow = idx => setDefects(defects.filter((_, i) => i !== idx));
 
+  const handleExportCSV = () => {
+    const formattedData = formatDataForExport(surveys, 'quarterly-survey');
+    exportToCSV(formattedData, 'quarterly-hull-survey');
+  };
+
   const handleModalSubmit = (e) => {
     e.preventDefault();
     const surveyData = { 
@@ -156,7 +162,13 @@ const QuartelyHullSurvey = () => {
       <nav className="w-full bg-gradient-to-r from-blue-200 via-blue-100 to-blue-300 border-b border-blue-300 sticky top-0 z-10 shadow">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
           <h1 className="text-2xl font-bold text-hull-primary">Quarterly Hull Survey</h1>
-          <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm" onClick={handleAdd}>Add New</Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleExportCSV}>
+              <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
+              Export as CSV
+            </Button>
+            <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm" onClick={handleAdd}>Add New</Button>
+          </div>
         </div>
       </nav>
       <Card className="bg-white/95 shadow-lg rounded-2xl w-full p-4">

@@ -9,6 +9,7 @@ import { PlusIcon, MagnifyingGlassIcon, DocumentArrowUpIcon, DocumentArrowDownIc
 import HvacTrialFormModal from '../components/HvacTrialFormModal';
 import { set } from 'date-fns';
 import Pagination from '@/components/ui/Pagination.jsx';
+import { exportToCSV, formatDataForExport } from '@/utils/csvExport';
 
 const Hvac = () => {
   const [trials, setTrials] = useState([]);
@@ -37,6 +38,11 @@ const Hvac = () => {
     fetchTrials();
   }, [showModal, currentPage]);
 
+  const handleExportCSV = () => {
+    const formattedData = formatDataForExport(trials, 'hvac');
+    exportToCSV(formattedData, 'hvac-trials');
+  };
+
   return (
   <div className="space-y-6 w-full">
       {/* Top Navbar with Dropdowns */}
@@ -50,9 +56,9 @@ const Hvac = () => {
               <DocumentArrowUpIcon className="h-4 w-4 mr-2" />
               Import
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleExportCSV}>
               <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
-              Export
+              Export as CSV
             </Button>
             <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm" onClick={() => { setShowModal(true);}}>
               <PlusIcon className="h-4 w-4 mr-2" />

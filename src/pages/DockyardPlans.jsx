@@ -13,11 +13,18 @@ import {
   ClockIcon,
   CalendarIcon,
   BuildingOffice2Icon,
-  MapPinIcon
+  MapPinIcon,
+  DocumentArrowDownIcon
 } from '@heroicons/react/24/outline';
+import { exportToCSV, formatDataForExport } from '@/utils/csvExport';
 
 const DockyardPlans = () => {
   const [activeTab, setActiveTab] = useState('plans');
+
+  const handleExportCSV = () => {
+    const formattedData = formatDataForExport(dockyardPlans, 'docking');
+    exportToCSV(formattedData, 'dockyard-plans');
+  };
 
   const dockyardPlans = [
     {
@@ -148,6 +155,10 @@ const DockyardPlans = () => {
             <p className="text-muted-foreground mt-1 text-sm">Manage vessel docking plans, approvals, and scheduling</p>
           </div>
           <div className="flex space-x-3">
+            <Button variant="outline" size="sm" onClick={handleExportCSV}>
+              <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
+              Export as CSV
+            </Button>
             <Button variant="outline" size="sm">
               <CalendarIcon className="h-4 w-4 mr-2" />
               View Calendar

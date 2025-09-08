@@ -3,10 +3,63 @@ import GenericMaster from './masters/GenericMaster';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, MagnifyingGlassIcon, DocumentArrowUpIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import { exportToCSV } from '@/utils/csvExport';
+import { toast } from '@/components/ui/use-toast';
 
 const GlobalMasters = () => {
   const [selectedMaster, setSelectedMaster] = useState('unit');
   const [searchValue, setSearchValue] = useState('');
+  const [masterData, setMasterData] = useState({ items: [], fields: null, loading: false });
+
+  const handleDataChange = (data) => {
+    setMasterData(data);
+  };
+
+  const handleExportCSV = () => {
+    const { items, fields } = masterData;
+    
+    if (!fields || items.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No data available to export",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create headers from the field definitions
+    const csvData = items.map(item => {
+      const row = {};
+      fields.list.forEach(field => {
+        let value = item[field.key];
+        
+        // Handle foreign key references
+        if (field.ref && value && typeof value === 'object') {
+          value = value.name || value.toString();
+        }
+        
+        // Handle boolean values
+        if (typeof value === 'boolean') {
+          value = value ? 'Yes' : 'No';
+        }
+        
+        // Handle null/undefined values
+        if (value === null || value === undefined) {
+          value = '';
+        }
+        
+        row[field.label] = value;
+      });
+      return row;
+    });
+
+    exportToCSV(csvData, `${fields.title.toLowerCase()}-master`);
+    
+    toast({
+      title: "Export Successful",
+      description: `Exported ${items.length} ${fields.title.toLowerCase()} records as CSV`,
+    });
+  };
 
   useEffect(() => {
     // Reset search value when selected master changes
@@ -93,11 +146,16 @@ const GlobalMasters = () => {
           <div className="flex space-x-3">
             <Button variant="outline" size="sm">
               <DocumentArrowUpIcon className="h-4 w-4 mr-2" />
-              Import
+              Bulk Upload
             </Button>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleExportCSV}
+              disabled={masterData.loading || masterData.items.length === 0}
+            >
               <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
-              Export
+              Export as CSV
             </Button>
             {/* <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
               <PlusIcon className="h-4 w-4 mr-2" />
@@ -135,7 +193,11 @@ const GlobalMasters = () => {
             </div>
           </CardHeader>
           <CardContent className="">
-            <GenericMaster masterKey={selectedMaster} searchValue={searchValue} />
+            <GenericMaster 
+              masterKey={selectedMaster} 
+              searchValue={searchValue} 
+              onDataChange={handleDataChange}
+            />
           </CardContent>
         </Card>
       </div>

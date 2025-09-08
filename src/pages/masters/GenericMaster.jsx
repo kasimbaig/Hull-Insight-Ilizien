@@ -5,6 +5,7 @@ import api from '@/lib/axios';
 import MasterModal from '../../components/MasterModal';
 import MasterTable from '../../components/MasterTable';
 import { Button } from '@/components/ui/button';
+import { exportToCSV } from '@/utils/csvExport';
 
 const masterFields = {
   unit: {
@@ -166,7 +167,7 @@ const apiMap = {
 
 const PAGE_SIZE = 20;
 
-const GenericMaster = ({ masterKey, searchValue='' }) => {
+const GenericMaster = ({ masterKey, searchValue='', onDataChange }) => {
   const fields = masterFields[masterKey];
   const [allItems, setAllItems] = useState({});
   const [loading, setLoading] = useState(false);
@@ -216,6 +217,18 @@ const GenericMaster = ({ masterKey, searchValue='' }) => {
 
   // Get items for the current master
   const items = Array.isArray(allItems[masterKey]) ? allItems[masterKey] : [];
+
+  // Notify parent component when data changes
+  useEffect(() => {
+    if (onDataChange && fields) {
+      onDataChange({
+        items,
+        fields,
+        loading
+      });
+    }
+  }, [items, fields, loading, onDataChange]);
+
 
   // Build related options for select fields (foreign keys)
   const relatedOptions = {};
