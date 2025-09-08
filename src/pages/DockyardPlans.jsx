@@ -159,10 +159,10 @@ const DockyardPlans = () => {
               <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
               Export as CSV
             </Button>
-            <Button variant="outline" size="sm">
+            {/* <Button variant="outline" size="sm">
               <CalendarIcon className="h-4 w-4 mr-2" />
               View Calendar
-            </Button>
+            </Button> */}
             <Button className="bg-hull-primary hover:bg-hull-primary-dark" size="sm">
               <PlusIcon className="h-4 w-4 mr-2" />
               New Docking Plan
