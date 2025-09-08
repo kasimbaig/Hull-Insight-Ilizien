@@ -47,14 +47,17 @@ export const formatDataForExport = (data, type) => {
   switch (type) {
     case 'hvac':
       return data.map(item => ({
+        'Trial ID': item.id || '',
         'Ship Name': item.ship_name || '',
         'Date of Trials': item.date_of_trials || '',
         'Place of Trials': item.place_of_trials || '',
         'Document No': item.document_no || '',
         'Occasion': item.occasion_of_trials || '',
         'Authority': item.authority_for_trials || '',
-        'Air Flow Measurements': item.airflow_measurements?.length || 0,
-        'Machinery Measurements': item.machinery_airflow_measurements?.length || 0,
+        'Air Flow Measurements': item.total_airflow_measurements || 0,
+        'Machinery Measurements': item.total_machinery_measurements || 0,
+        'Created On': item.created_on || '',
+        'Modified On': item.modified_on || '',
         'Status': 'Active'
       }));
     

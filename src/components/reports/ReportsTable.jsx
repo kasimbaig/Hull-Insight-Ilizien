@@ -28,8 +28,8 @@ const ReportsTable = ({
           status: "Active",
           trial_date: trial.date_of_trials,
           place_of_trials: trial.place_of_trials,
-          air_flow_measurements: trial.airflow_measurements.length,
-          machinery_measurements: trial.machinery_airflow_measurements.length,
+          air_flow_measurements: trial.total_airflow_measurements || 0,
+          machinery_measurements: trial.total_machinery_measurements || 0,
           last_updated: trial.modified_on
         }))];
       }

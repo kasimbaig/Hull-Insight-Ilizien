@@ -214,9 +214,29 @@ const Reports = () => {
       const response = await getRequest(endpoint);
       console.log('HVAC API Response:', response); // Debug log
       
+      // Transform the API response to match our expected format
+      const transformedTrials = (response.trials || []).map(trial => ({
+        id: trial.id,
+        ship_name: trial.ship_name,
+        ship_id: response.ship_id || shipId,
+        date_of_trials: trial.date_of_trials,
+        place_of_trials: trial.place_of_trials,
+        document_no: trial.document_no,
+        occasion_of_trials: trial.occasion_of_trials,
+        authority_for_trials: trial.authority_for_trials,
+        created_on: trial.created_on,
+        modified_on: trial.modified_on,
+        // Count measurements for summary
+        total_airflow_measurements: trial.airflow_measurements?.length || 0,
+        total_machinery_measurements: trial.machinery_airflow_measurements?.length || 0,
+        // Store the full measurement data for detailed view
+        airflow_measurements: trial.airflow_measurements || [],
+        machinery_airflow_measurements: trial.machinery_airflow_measurements || []
+      }));
+      
       const hvacReport = {
         ship_id: response.ship_id || shipId,
-        trials: response.trials || []
+        trials: transformedTrials
       };
       
       setReportData(prev => ({ ...prev, hvacReport }));
