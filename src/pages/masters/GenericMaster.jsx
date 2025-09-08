@@ -293,7 +293,7 @@ const GenericMaster = ({ masterKey, searchValue='', onDataChange }) => {
     if (!endpoint) return;
     try {
       if (editId) {
-        await api.put(`/master/${endpoint}/${editId}/`, form);
+        await api.post(`/master/${endpoint}/`, { ...form, id: editId });
         toast({ title: `${fields.title} updated successfully!` });
       } else {
         await api.post(`/master/${endpoint}/`, form);
@@ -316,7 +316,7 @@ const GenericMaster = ({ masterKey, searchValue='', onDataChange }) => {
     const endpoint = apiMap[masterKey];
     if (!endpoint) return;
     try {
-      await api.delete(`/master/${endpoint}/${id}/`);
+      await api.post(`/master/${endpoint}/`, { id, delete: true });
       toast({ title: `${fields.title} deleted successfully!` });
       await refresh();
     } catch (err) {
