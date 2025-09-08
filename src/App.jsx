@@ -14,7 +14,7 @@ const RequireAuth = ({ children }) => {
 
 const RedirectIfAuth = ({ children }) => {
   if (isAuthenticated()) {
-    window.location.href = '/';
+    window.location.href = '/dashboard';
     return null;
   }
   return children;
@@ -37,6 +37,7 @@ import InteractiveDrawing from './pages/InteractiveDrawing.jsx';
 import Reports from './pages/Reports';
 import ManageUsers from './pages/ManageUsers';
 import ManageUserRoles from './pages/ManageUserRoles';
+import Landing from './pages/Landing';
 
 const queryClient = new QueryClient();
 //demo credentials and dashboard on top duplicate search bars 
@@ -47,8 +48,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<RedirectIfAuth><Login /></RedirectIfAuth>} />
-          <Route path="/" element={<RequireAuth><MainLayout><Dashboard /></MainLayout></RequireAuth>} />
+          <Route path="/dashboard" element={<RequireAuth><MainLayout><Dashboard /></MainLayout></RequireAuth>} />
           <Route path="/masters" element={<RequireAuth><MainLayout><GlobalMasters /></MainLayout></RequireAuth>} />
           <Route path="/dockyard-plans" element={<RequireAuth><MainLayout><DockyardPlans /></MainLayout></RequireAuth>} />
           <Route path="/hull-surveys" element={<RequireAuth><MainLayout><QuartelyHullSurvey /></MainLayout></RequireAuth>} />
