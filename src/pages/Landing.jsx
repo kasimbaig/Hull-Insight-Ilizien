@@ -126,22 +126,7 @@ const Landing = () => {
               style={{ backgroundImage: `url(${slide.image})` }}
             >
               <div className="absolute inset-0 bg-black/40" />
-              <div className="relative z-10 flex items-center justify-center h-full">
-                <div className="text-center text-white max-w-4xl mx-auto px-6">
-                  <h2 className="text-4xl md:text-6xl font-bold mb-6">
-                    {slide.title}
-                  </h2>
-                  <p className="text-lg md:text-xl mb-8 leading-relaxed">
-                    {slide.description}
-                  </p>
-                  <Button 
-                    onClick={handleLoginClick}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg rounded-none shadow-lg"
-                  >
-                    Login
-                  </Button>
-                </div>
-              </div>
+              
             </div>
           </div>
         ))}
