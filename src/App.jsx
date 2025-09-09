@@ -48,8 +48,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<RedirectIfAuth><Login /></RedirectIfAuth>} />
-          <Route path="/landing" element={<Landing />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<RedirectIfAuth><Login /></RedirectIfAuth>} />
           <Route path="/dashboard" element={<RequireAuth><MainLayout><Dashboard /></MainLayout></RequireAuth>} />
           <Route path="/masters" element={<RequireAuth><MainLayout><GlobalMasters /></MainLayout></RequireAuth>} />
