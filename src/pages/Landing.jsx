@@ -456,11 +456,11 @@ const Landing = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-white rounded border">
                   <span className="text-gray-700">Last Updated</span>
-                  <span className="font-semibold text-blue-900">06/09/2025</span>
+                  <span className="font-semibold text-blue-900">05/02/2025</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-white rounded border">
                   <span className="text-gray-700">Visitors</span>
-                  <span className="font-semibold text-blue-900">71,298</span>
+                  <span className="font-semibold text-blue-900">51298</span>
                 </div>
               </div>
             </div>
@@ -472,10 +472,10 @@ const Landing = () => {
       <footer className="bg-blue-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <p className="text-sm mb-2">
-            All Rights Reserved with BISAG-N. This site is developed and maintained by BISAG-N & Ilizien.
+            &copy; 2025 Directorate of Naval Architecture. All rights reserved.
           </p>
           <p className="text-xs text-blue-200">
-            Last Updated 06/09/2025 | Visitors 71298
+          Last Updated: 05/09/2025 | Visitors: 51,298
           </p>
         </div>
       </footer>
