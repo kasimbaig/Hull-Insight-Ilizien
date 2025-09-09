@@ -41,7 +41,7 @@ const Landing = () => {
   }, []);
 
   const handleLoginClick = () => {
-    navigate('/login');
+    navigate('/');
   };
 
   const handleNavClick = (sectionId) => {

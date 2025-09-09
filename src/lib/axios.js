@@ -40,14 +40,14 @@ api.interceptors.response.use(
           localStorage.removeItem("refreshToken");
           localStorage.removeItem("isLoggedIn");
           localStorage.removeItem("user");
-          window.location.href = "/login";
+          window.location.href = "/";
         }
       }else{
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("user");
-        window.location.href = "/login";
+        window.location.href = "/";
       }
     }
     return Promise.reject(error);

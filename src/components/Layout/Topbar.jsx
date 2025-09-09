@@ -28,7 +28,7 @@ const Topbar = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    window.location.href = '/login';
+    window.location.href = '/';
   }
   const user = {
     name: localStorage.getItem('user') || 'Guest User',
